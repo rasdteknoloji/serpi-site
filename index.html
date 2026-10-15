@@ -1,0 +1,1633 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Op. Dr. Muhammet Serpi · Beyin ve Sinir Cerrahisi">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Op. Dr. Muhammet Serpi · Beyin ve Sinir Cerrahisi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@300;400&display=swap">
+<style>
+/* Layout: full-bleed WebGL stage; thin surgical HUD bottom-left, level rail at left edge; homepage overlays the left column once the intro resolves */
+:root{
+  --void:#000000;
+  --bone:#dbe4f2;
+  --bone-dim:#9aa6b8;
+  --titanium:#aeb7c2;
+  --gold:#c9a35b;
+  --green:#5fb08a;
+  --green-soft:rgba(95,176,138,.14);
+  --hair:rgba(219,228,242,.16);
+  --glass:rgba(10,12,16,.55);
+  --f-disp:'Cormorant Garamond', 'Times New Roman', Georgia, serif;
+  --f-body:'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono:'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  color-scheme:dark;
+}
+body[data-phase="home"]{
+  --void:#ffffff;
+  --bone:#14171c;
+  --bone-dim:#5d6676;
+  --titanium:#4a525e;
+  --gold:#a8843c;
+  --green:#2f7d5b;
+  --green-soft:#e6f2ec;
+  --hair:rgba(20,23,28,.14);
+  --glass:rgba(255,255,255,.7);
+  color-scheme:light;
+}
+html,body{height:100%}
+body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow:hidden;-webkit-font-smoothing:antialiased}
+.flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none}
+#stage{position:fixed;inset:0;width:100%;height:100%;display:block;outline:none;touch-action:none}
+body[data-phase="home"] #stage{cursor:grab}
+body[data-phase="home"].dragging #stage{cursor:grabbing}
+a{text-decoration:none;color:inherit}
+
+.veil{position:fixed;inset:0;background:var(--void);opacity:0;pointer-events:none;transition:opacity .9s ease}
+.shade{position:fixed;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s ease .2s;
+  background:linear-gradient(90deg,rgba(0,0,0,.88) 0%,rgba(0,0,0,.62) 34%,rgba(0,0,0,0) 62%)}
+[data-phase="logo"] .veil{opacity:.62}
+[data-phase="home"] .shade{opacity:1;background:linear-gradient(90deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,.72) 34%,rgba(255,255,255,0) 62%)}
+
+/* NAV + BRAND */
+.nav{position:fixed;top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;gap:24px;
+  padding-top:calc(env(safe-area-inset-top,0px) + 22px);padding-bottom:18px;
+  padding-left:max(28px,env(safe-area-inset-left,0px));padding-right:max(28px,env(safe-area-inset-right,0px));
+  pointer-events:none}
+[data-phase="home"] .nav{pointer-events:auto}
+.brand{display:flex;align-items:center;gap:14px;opacity:0;transform-origin:center;will-change:transform,opacity;text-decoration:none;color:inherit}
+[data-phase="logo"] .brand,[data-phase="home"] .brand{opacity:1}
+.brand svg{width:38px;height:38px;flex:none}
+.brand-name{font-family:var(--f-disp);font-weight:600;font-size:24px;letter-spacing:.02em;line-height:1;color:var(--bone);transition:color .5s ease}
+.brand-sub{font-family:var(--f-mono);font-size:9.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold);margin-top:5px;transition:color .5s ease}
+.brand svg .ink{fill:var(--bone);transition:fill .5s ease}
+.brand svg .acc{fill:var(--gold);transition:fill .5s ease}
+.brand svg .accs{stroke:var(--gold);transition:stroke .5s ease}
+.brand svg .heal{fill:var(--green);transition:fill .5s ease}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0;padding:0;opacity:0;transform:translateY(-6px);transition:opacity .7s ease 1.1s,transform .7s ease 1.1s}
+.nav-links a{color:var(--bone-dim);text-decoration:none;font-size:13.5px;font-weight:500;letter-spacing:.04em;transition:color .25s ease}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--bone)}
+.nav-cta{opacity:0;transition:opacity .7s ease 1.2s}
+[data-phase="home"] .nav-links{opacity:1;transform:none}
+[data-phase="home"] .nav-cta{opacity:1}
+
+.btn{font-family:var(--f-body);font-size:13.5px;font-weight:600;letter-spacing:.03em;border-radius:999px;padding:11px 20px;border:1px solid var(--hair);background:transparent;color:var(--bone);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--green);color:var(--green)}
+.btn-gold:hover{color:#fff}
+.btn-gold{background:var(--gold);color:#fff;border-color:var(--gold)}
+.btn-gold:hover{filter:brightness(1.08)}
+.btn:focus-visible,.ctl:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+
+/* HERO (homepage placeholder) */
+.hero{position:fixed;left:0;top:50%;transform:translateY(-46%);width:min(600px,52vw);
+  padding-left:max(56px,env(safe-area-inset-left,0px));padding-right:16px;pointer-events:none;display:flex;flex-direction:column;gap:22px}
+[data-phase="home"] .hero{pointer-events:auto}
+.hero>*{opacity:0;transform:translateY(14px);transition:opacity .9s ease,transform .9s cubic-bezier(.2,.7,.2,1)}
+[data-phase="home"] .hero>*{opacity:1;transform:none}
+[data-phase="home"] .hero>*:nth-child(1){transition-delay:.55s}
+[data-phase="home"] .hero>*:nth-child(2){transition-delay:.7s}
+[data-phase="home"] .hero>*:nth-child(3){transition-delay:.85s}
+[data-phase="home"] .hero>*:nth-child(4){transition-delay:1s}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:12px}
+.eyebrow::before{content:"";width:28px;height:1px;background:var(--green)}
+.hero h1{font-family:var(--f-disp);font-weight:500;font-size:clamp(38px,5vw,68px);line-height:1.02;letter-spacing:-.005em;margin:0;text-wrap:balance}
+.hero h1 em{font-style:italic;color:var(--titanium)}
+.hero p{font-size:16.5px;line-height:1.6;color:var(--bone-dim);margin:0;max-width:46ch}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+
+/* HUD */
+.hud{position:fixed;left:max(56px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 34px);
+  opacity:0;transition:opacity .5s ease;pointer-events:none;display:flex;flex-direction:column;gap:6px}
+.hud.show{opacity:1}
+.hud-level{font-family:var(--f-mono);font-weight:300;font-size:44px;line-height:1;letter-spacing:-.02em;color:var(--bone);font-variant-numeric:tabular-nums}
+.hud-spec{font-family:var(--f-mono);font-size:13px;color:var(--gold);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.hud-type{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--bone-dim)}
+
+.rail{position:fixed;left:max(22px,env(safe-area-inset-left,0px));top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column-reverse;gap:5px;opacity:0;transition:opacity .5s ease;pointer-events:none}
+.rail.show{opacity:1}
+.tick{position:relative;height:2px;width:10px;background:var(--hair);transition:background .25s ease,width .25s ease}
+.tick.on{background:var(--gold);width:16px}
+.tick[data-label]::after{content:attr(data-label);position:absolute;left:22px;top:-6px;font-family:var(--f-mono);font-size:9px;letter-spacing:.08em;color:var(--bone-dim)}
+.tick.gap{margin-top:6px}
+
+/* CONTROLS */
+.controls{position:fixed;right:max(20px,env(safe-area-inset-right,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
+  display:flex;gap:8px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+.ctl{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--bone-dim);background:var(--glass);
+  border:1px solid var(--hair);border-radius:999px;padding:8px 13px;cursor:pointer;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.ctl:hover{color:var(--bone);border-color:var(--bone-dim)}
+.speed{display:flex;border:1px solid var(--hair);border-radius:999px;overflow:hidden;background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.speed .ctl{border:0;border-radius:0;background:transparent;padding:8px 10px}
+.speed .ctl[aria-pressed="true"]{color:#fff;background:var(--gold)}
+[data-phase="home"] #skip{display:none}
+
+.instant,.instant *{transition:none!important}
+
+@media (max-width:860px){
+  .nav-links{display:none}
+  .hero{width:auto;right:0;top:auto;bottom:calc(env(safe-area-inset-bottom,0px) + 78px);transform:none;
+    padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px));gap:16px}
+  .shade{background:linear-gradient(0deg,rgba(0,0,0,.92) 0%,rgba(0,0,0,.7) 42%,rgba(0,0,0,.15) 75%)}
+  body[data-phase="home"] .shade{background:linear-gradient(0deg,rgba(255,255,255,.95) 0%,rgba(255,255,255,.78) 42%,rgba(255,255,255,.15) 75%)}
+  .nav{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .hud{left:max(20px,env(safe-area-inset-left,0px));bottom:calc(env(safe-area-inset-bottom,0px) + 76px)}
+  .hud-level{font-size:34px}
+  .rail{display:none}
+  .brand-name{font-size:20px}
+}
+@media (max-height:560px){.rail{display:none}}
+
+/* ===== Online ön görüşme: şikayet haritası ===== */
+.pain{position:fixed;inset:0;z-index:20;background:var(--void);color:var(--bone);overflow:auto;
+  --void:#ffffff;--bone:#14171c;--bone-dim:#5d6676;--titanium:#4a525e;--gold:#a8843c;--green:#2f7d5b;--green-soft:#e6f2ec;--hair:rgba(20,23,28,.14);--glass:rgba(255,255,255,.7);color-scheme:light}
+.pain-top{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding-block:14px;padding-left:max(24px,env(safe-area-inset-left,0px));padding-right:max(24px,env(safe-area-inset-right,0px));
+  background:rgba(255,255,255,.86);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--hair)}
+.pain-title{display:flex;align-items:center;gap:14px;min-width:0}
+.pain-title h2{font-family:var(--f-disp);font-weight:600;font-size:22px;margin:0;letter-spacing:.01em;white-space:nowrap}
+.steps{display:flex;gap:18px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bone-dim)}
+.steps span{display:flex;align-items:center;gap:7px}
+.steps i{font-style:normal;width:18px;height:18px;border-radius:50%;border:1px solid var(--hair);display:grid;place-items:center;font-size:10px}
+.steps span.on{color:var(--green)} .steps span.on i{background:var(--green);color:#fff;border-color:var(--green)}
+.icon-btn{width:38px;height:38px;border-radius:50%;border:1px solid var(--hair);background:transparent;color:var(--bone);display:grid;place-items:center;cursor:pointer;flex:none}
+.icon-btn:hover{border-color:var(--bone-dim)}
+.pain-body{display:grid;grid-template-columns:minmax(0,1fr) 560px;height:calc(100vh - 67px);height:calc(100dvh - 67px)}
+.pain-stage{position:relative;min-height:0;background:radial-gradient(ellipse at 50% 60%,#ffffff 0%,#eef1f4 70%,#e6eaee 100%);
+  border-right:1px solid var(--hair);overflow:hidden;touch-action:none}
+#painCanvas{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:crosshair}
+.stage-hint{position:absolute;left:50%;top:22px;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--bone-dim);
+  background:rgba(255,255,255,.8);border:1px solid var(--hair);border-radius:999px;padding:7px 14px;pointer-events:none;white-space:nowrap}
+.hover-label{position:absolute;pointer-events:none;transform:translate(14px,-50%);font-size:13px;font-weight:600;color:var(--bone);
+  background:rgba(255,255,255,.92);border:1px solid var(--hair);border-radius:8px;padding:6px 10px;opacity:0;transition:opacity .15s;white-space:nowrap}
+.hover-label.show{opacity:1}
+.views{position:absolute;left:50%;bottom:18px;transform:translateX(-50%);display:flex;border:1px solid var(--hair);border-radius:999px;background:rgba(255,255,255,.88);overflow:hidden}
+.views button{font-family:var(--f-body);font-size:12.5px;font-weight:600;letter-spacing:.03em;padding:9px 16px;border:0;background:transparent;color:var(--bone-dim);cursor:pointer}
+.views button[aria-pressed="true"]{color:#fff;background:var(--bone)}
+.side-key{position:absolute;right:18px;bottom:22px;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;color:var(--bone-dim);text-transform:uppercase;text-align:right;line-height:1.6}
+
+.pain-panel{padding-block:16px 22px;padding-left:24px;padding-right:max(24px,env(safe-area-inset-right,0px));overflow:auto;min-height:0}
+.form{display:flex;flex-direction:column;gap:13px}
+.panel-head h3{font-family:var(--f-disp);font-weight:600;font-size:23px;margin:0 0 3px;line-height:1.1}
+.panel-head p{margin:0;color:var(--bone-dim);font-size:13px;line-height:1.45}
+.fld{display:flex;flex-direction:column;gap:6px;min-width:0}
+.fld>label,.fld>.lbl{font-family:var(--f-mono);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--bone-dim);display:flex;justify-content:space-between;align-items:baseline;line-height:1.3}
+.fld>.lbl b{font-family:var(--f-body);font-weight:600;letter-spacing:0;text-transform:none;color:var(--bone);font-size:13px}
+.marks{display:flex;flex-direction:column;gap:8px;max-height:30vh;overflow:auto}
+.mark{border:1px solid var(--hair);border-radius:12px;padding:9px 12px;display:flex;flex-direction:column;gap:7px;background:#fff}
+.mark.active{border-color:var(--green);box-shadow:0 0 0 3px var(--green-soft)}
+.mark-row{display:flex;align-items:center;gap:10px}
+.mark-dot{width:22px;height:22px;border-radius:50%;background:var(--gold);color:#fff;font-family:var(--f-mono);font-size:11px;display:grid;place-items:center;flex:none}
+.mark-name{font-weight:600;font-size:14.5px;flex:1;min-width:0}
+.mark-del{border:0;background:transparent;color:var(--bone-dim);cursor:pointer;font-size:18px;line-height:1;padding:2px 6px;border-radius:6px}
+.mark-del:hover{color:var(--bone);background:var(--green-soft)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font-family:var(--f-body);font-size:12.5px;font-weight:500;padding:5px 11px;border-radius:999px;border:1px solid var(--hair);background:#fff;color:var(--bone);cursor:pointer;transition:all .15s;line-height:1.3}
+.chip:hover{border-color:var(--bone-dim)}
+.chip[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#fff}
+.empty{border:1px dashed var(--hair);border-radius:12px;padding:12px;color:var(--bone-dim);font-size:13px;line-height:1.5;text-align:center}
+.sev{display:flex;align-items:center;gap:12px}
+.sev input[type=range]{flex:1;accent-color:var(--green);margin:0}
+.sev output{font-family:var(--f-mono);font-size:18px;font-variant-numeric:tabular-nums;width:2ch;text-align:right}
+.inp,textarea.inp,select.inp{font-family:var(--f-body);font-size:14px;color:var(--bone);background:#fff;border:1px solid var(--hair);border-radius:9px;padding:9px 12px;width:100%;box-sizing:border-box;min-width:0}
+.inp:focus{outline:2px solid var(--green);outline-offset:1px;border-color:transparent}
+textarea.inp{min-height:58px;resize:vertical;line-height:1.45}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.three{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.consent{display:flex;gap:9px;align-items:flex-start;font-size:12px;color:var(--bone-dim);line-height:1.45}
+.consent input{margin-top:2px;accent-color:var(--green);width:15px;height:15px;flex:none}
+.submit{display:flex;flex-direction:column;gap:8px}
+.btn-green{background:var(--green);color:#fff;border-color:var(--green);justify-content:center;padding:12px 22px;font-size:14.5px}
+.btn-green:hover{filter:brightness(1.06)} .btn-green[disabled]{opacity:.5;cursor:not-allowed;filter:none}
+.note{font-size:11.5px;color:var(--bone-dim);line-height:1.45;margin:0}
+.status{border-radius:12px;padding:14px 16px;font-size:14px;line-height:1.55;display:none}
+.status.ok{display:block;background:var(--green-soft);color:#1d5a40;border:1px solid rgba(47,125,91,.3)}
+.status.err{display:block;background:#fbeeea;color:#8a2f1d;border:1px solid rgba(138,47,29,.3)}
+.status .ref{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;display:block;margin-top:6px}
+.done{display:none;flex-direction:column;gap:18px;padding:24px;border-radius:16px;background:var(--green-soft);border:1px solid rgba(47,125,91,.25)}
+.done.show{display:flex}
+.done .tick{width:48px;height:48px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:22px}
+.done h3{font-family:var(--f-disp);font-weight:600;font-size:26px;margin:0}
+.done p{margin:0;font-size:14.5px;line-height:1.6;color:#1d5a40}
+.done .sum{background:#fff;border-radius:10px;padding:12px 14px;font-size:13.5px;line-height:1.6;color:var(--bone)}
+
+/* inbox */
+.inbox{display:none;flex-direction:column;gap:12px}
+.pain.inbox-mode .pain-panel .form{display:none}
+.pain.inbox-mode .inbox{display:flex}
+.inbox-item{border:1px solid var(--hair);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;background:#fff}
+.inbox-item.seen{opacity:.6}
+.inbox-item .top{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.inbox-item .who{font-weight:600;font-size:15px}
+.inbox-item .when{font-family:var(--f-mono);font-size:11px;color:var(--bone-dim);letter-spacing:.04em}
+.inbox-item .regs{display:flex;flex-wrap:wrap;gap:6px}
+.inbox-item .regs span{font-size:12px;padding:4px 9px;border-radius:999px;background:var(--green-soft);color:#1d5a40}
+.inbox-item .meta{font-size:13px;color:var(--bone-dim);line-height:1.5}
+.inbox-item .meta b{color:var(--bone);font-weight:600}
+.inbox-item .acts{display:flex;gap:8px;flex-wrap:wrap}
+.inbox-item .acts .btn{padding:7px 14px;font-size:12.5px}
+.badge{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--green);color:#fff;font-family:var(--f-mono);font-size:11px;margin-left:6px}
+.badge:empty{display:none}
+.nav-pain{display:none}
+[data-phase="home"] .nav-pain{display:inline-flex}
+
+@media (max-width:960px){
+  .pain-body{grid-template-columns:1fr;height:auto}
+  .pain-stage{min-height:62vh;border-right:0;border-bottom:1px solid var(--hair)}
+  .pain-panel{overflow:visible}
+  .marks{max-height:none}
+  .three{grid-template-columns:1fr 1fr}
+  .pain-panel{padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+  .steps{display:none}
+  .side-key{display:none}
+  .two{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<canvas id="stage" aria-label="Omurga vidalama 3D giriş animasyonu" role="img"></canvas>
+<div class="veil"></div>
+<div class="shade"></div>
+<div class="flash" id="flash"></div>
+
+<header class="nav">
+  <a class="brand" id="brand" href="#" aria-label="Ana sayfa">
+    <svg viewBox="0 0 40 40" aria-hidden="true">
+      <circle cx="20" cy="20" r="18.2" fill="none" class="accs" stroke-width="1.5"/>
+      <g class="ink">
+        <rect x="14.6" y="8.2" width="10.8" height="3.1" rx="1.55"/>
+        <rect x="13.8" y="13.3" width="12.4" height="3.3" rx="1.65"/>
+        <rect x="12.8" y="23.9" width="14.4" height="3.5" rx="1.75"/>
+        <rect x="12.2" y="29.3" width="15.6" height="3.7" rx="1.85"/>
+      </g>
+      <rect x="13.2" y="18.5" width="13.6" height="3.5" rx="1.75" class="heal"/>
+      <circle cx="31.2" cy="20.25" r="1.7" class="acc"/>
+      <path d="M8.6 20.25 H11.6" class="accs" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span>
+      <span class="brand-name" style="display:block">Op. Dr. Muhammet Serpi</span>
+      <span class="brand-sub" style="display:block">Beyin ve Sinir Cerrahisi</span>
+    </span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#">Hakkımda</a></li>
+    <li><a href="#">Tedaviler</a></li>
+    <li><a href="#">Omurga Cerrahisi</a></li>
+    <li><a href="#">Hasta Rehberi</a></li>
+    <li><a href="#" data-open-pain>Online Ön Görüşme</a></li>
+    <li><a href="#">İletişim</a></li>
+  </ul>
+  <a class="btn btn-gold nav-cta" href="#">Randevu al</a>
+</header>
+
+<section class="hero" aria-label="Ana sayfa">
+  <div class="eyebrow">Beyin ve Sinir Cerrahisi Uzmanı</div>
+  <h1>Omurganın her seviyesinde <em>planlı ve hassas</em> cerrahi.</h1>
+  <p>Op. Dr. Muhammet Serpi; bel ve boyun fıtığından omurga stabilizasyonuna, beyin ve sinir cerrahisinin tüm alanlarında tanı, cerrahi planlama ve uzun dönem takip sunar. Her vida ve her rod, hastaya özel ölçülerle seçilir.</p>
+  <div class="hero-actions">
+    <a class="btn btn-gold" href="#">Randevu al</a>
+    <a class="btn" href="#" data-open-pain>Ağrınızı haritada gösterin</a>
+  </div>
+</section>
+
+<div class="rail" id="rail" aria-hidden="true"></div>
+<div class="hud" id="hud" aria-live="off">
+  <div class="hud-level" id="hudLevel">S1</div>
+  <div class="hud-spec" id="hudSpec">Ø 7,5 × 40 mm</div>
+  <div class="hud-type" id="hudType">Pedikül vidası</div>
+</div>
+
+
+<section class="pain" id="pain" hidden aria-label="Online ön görüşme: şikayet haritası">
+  <header class="pain-top">
+    <div class="pain-title">
+      <button class="icon-btn" id="painBack" type="button" aria-label="Ana sayfaya dön">←</button>
+      <h2>Şikayet Haritası</h2>
+    </div>
+    <div class="steps" aria-hidden="true">
+      <span class="on" id="st1"><i>1</i>İşaretle</span>
+      <span id="st2"><i>2</i>Tanımla</span>
+      <span id="st3"><i>3</i>Gönder</span>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" id="inboxBtn" type="button" hidden>Gelen Kutusu<span class="badge" id="inboxCount"></span></button>
+    </div>
+  </header>
+
+  <div class="pain-body">
+    <div class="pain-stage" id="painStage">
+      <canvas id="painCanvas" aria-label="3D insan modeli; ağrıyan bölgeye dokunun" role="img"></canvas>
+      <div class="stage-hint" id="stageHint">Ağrıyan bölgeye dokunun</div>
+      <div class="hover-label" id="hoverLabel"></div>
+      <div class="views" role="group" aria-label="Görünüm">
+        <button type="button" data-view="0" aria-pressed="true">Ön</button>
+        <button type="button" data-view="1.5708" aria-pressed="false">Sol yan</button>
+        <button type="button" data-view="3.1416" aria-pressed="false">Arka</button>
+        <button type="button" data-view="-1.5708" aria-pressed="false">Sağ yan</button>
+      </div>
+      <div class="side-key">Sürükleyerek çevirin<br>Sağ / sol: hastanın kendi yönü</div>
+    </div>
+
+    <aside class="pain-panel">
+      <div class="form" id="painForm">
+        <div class="panel-head">
+          <h3>Nereniz ağrıyor?</h3>
+          <p>Modelde şikayetinizin olduğu bölgelere dokunun; her bölge için hissettiğinizi seçin.</p>
+        </div>
+
+        <div class="fld">
+          <div class="lbl"><span>İşaretli bölgeler</span><b id="markCount">0 bölge</b></div>
+          <div class="marks" id="marks">
+            <div class="empty" id="marksEmpty">Henüz bölge işaretlenmedi.<br>Örnek: bel, ense, kol, bacak…</div>
+          </div>
+        </div>
+
+        <div class="fld">
+          <div class="lbl"><span>Şikayetin karakteri</span></div>
+          <div class="chips" id="charChips">
+            <button class="chip" type="button" aria-pressed="false" data-v="Sürekli">Sürekli</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Aralıklı">Aralıklı</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Hareketle artıyor">Hareketle artıyor</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Gece artıyor">Gece artıyor</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Öksürükle artıyor">Öksürükle artıyor</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Kol/bacağa yayılıyor">Kol/bacağa yayılıyor</button>
+            <button class="chip" type="button" aria-pressed="false" data-v="Yürümekle zorlanıyorum">Yürümekle zorlanıyorum</button>
+          </div>
+        </div>
+
+        <div class="fld">
+          <label for="sev">Şiddet (0 hiç yok · 10 dayanılmaz)</label>
+          <div class="sev"><input type="range" id="sev" min="0" max="10" value="5"><output id="sevOut" for="sev">5</output></div>
+        </div>
+
+        <div class="three">
+          <div class="fld">
+            <label for="dur">Ne zamandır?</label>
+            <select class="inp" id="dur">
+              <option value="">Seçin</option>
+              <option>1 haftadan az</option>
+              <option>1–4 hafta</option>
+              <option>1–6 ay</option>
+              <option>6 aydan uzun</option>
+            </select>
+          </div>
+          <div class="fld">
+            <label for="prior">Daha önce</label>
+            <select class="inp" id="prior">
+              <option value="">Seçin</option>
+              <option>İlk kez oluyor</option>
+              <option>Daha önce de oldu</option>
+              <option>Ameliyat geçirdim</option>
+              <option>MR / BT çekildi</option>
+            </select>
+          </div>
+          <div class="fld"><label for="pAge">Yaş</label><input class="inp" id="pAge" type="number" min="1" max="120" inputmode="numeric" placeholder="Yaş"></div>
+        </div>
+
+        <div class="fld">
+          <label for="noteTxt">Hasta notu</label>
+          <textarea class="inp" id="noteTxt" placeholder="Nasıl başladı, neyle artıyor veya azalıyor, kullandığınız ilaçlar…"></textarea>
+        </div>
+
+        <div class="three">
+          <div class="fld"><label for="pName">Ad Soyad</label><input class="inp" id="pName" type="text" autocomplete="name" placeholder="Adınız Soyadınız"></div>
+          <div class="fld"><label for="pPhone">Telefon</label><input class="inp" id="pPhone" type="tel" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx"></div>
+          <div class="fld"><label for="pCity">Şehir</label><input class="inp" id="pCity" type="text" autocomplete="address-level2" placeholder="Şehir"></div>
+        </div>
+
+        <label class="consent"><input type="checkbox" id="consent"><span>Sağlık bilgilerimin ön değerlendirme ve randevu amacıyla Op. Dr. Muhammet Serpi ve ekibi tarafından işlenmesini kabul ediyorum (KVKK).</span></label>
+
+        <div class="submit">
+          <button class="btn btn-green" id="sendBtn" type="button" disabled>Doktora gönder</button>
+          <div class="status" id="status"></div>
+          <p class="note">Acil durumlar için değildir: ani güç kaybı, konuşma bozukluğu, şiddetli baş ağrısı veya idrar/dışkı kontrol kaybında 112'yi arayın.</p>
+        </div>
+      </div>
+
+      <div class="done" id="done">
+        <div class="tick">✓</div>
+        <h3>Şikayetiniz iletildi</h3>
+        <p>Ön değerlendirme Op. Dr. Muhammet Serpi'ye ulaştı. Ekibimiz randevu için sizi arayacak.</p>
+        <div class="sum" id="doneSum"></div>
+        <p style="font-family:var(--f-mono);font-size:12px;letter-spacing:.08em" id="doneRef"></p>
+        <button class="btn" id="newForm" type="button">Yeni bildirim</button>
+      </div>
+
+      <div class="inbox" id="inbox">
+        <div class="panel-head">
+          <h3>Gelen Kutusu</h3>
+          <p>Hastaların gönderdiği şikayet haritaları. Sadece doktor hesabı görür.</p>
+        </div>
+        <div id="inboxList"></div>
+        <button class="btn" id="inboxClose" type="button">Forma dön</button>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<div class="controls">
+  <button class="ctl" id="replay" type="button">Baştan oynat</button>
+  <div class="speed" role="group" aria-label="Hız">
+    <button class="ctl" type="button" data-speed="0.5" aria-pressed="false">0.5×</button>
+    <button class="ctl" type="button" data-speed="1" aria-pressed="true">1×</button>
+    <button class="ctl" type="button" data-speed="2" aria-pressed="false">2×</button>
+  </div>
+  <button class="ctl" id="skip" type="button">Atla →</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+'use strict';
+const body = document.body;
+body.dataset.phase = 'intro';
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- timeline (seconds at 1×) ---------- */
+const T0 = 1.0;      // black screen until here
+const LV = 0.13;     // step per level  → S1..C1 ≈ 3.2 s
+const SD = 1.2;      // screw drive duration
+const RL = 1.35;     // rod lag behind screw
+const SK = 4.3;      // skull fades in
+const PL = 5.2;      // occipital plate lands
+const RX = 5.65;     // rods extend to plate
+const PS = 6.1;      // plate screws
+const RV = 7.2;      // reveal / full view
+const LG = 9.3;      // logo splash
+const HM = 10.9;     // homepage
+
+const brand = document.getElementById('brand'), flash = document.getElementById('flash');
+const hud = document.getElementById('hud'), rail = document.getElementById('rail');
+const hudLevel = document.getElementById('hudLevel'), hudSpec = document.getElementById('hudSpec'), hudType = document.getElementById('hudType');
+
+if (typeof THREE === 'undefined') { body.dataset.phase = 'home'; return; }
+const canvas = document.getElementById('stage');
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: 'high-performance' }); }
+catch (e) { body.dataset.phase = 'home'; return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1.05;
+renderer.setClearColor(0x000000, 1);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(30, 1, 0.5, 900);
+
+/* ---------- helpers ---------- */
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+const lerp = (a, b, t) => a + (b - a) * t;
+const ss = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+const eo3 = x => 1 - Math.pow(1 - clamp(x, 0, 1), 3);
+const qRx90 = new THREE.Quaternion().setFromAxisAngle(V(1, 0, 0), Math.PI / 2);
+const trComma = n => String(n).replace('.', ',');
+
+/* ---------- environments for metal (dark studio / white studio) ---------- */
+function makeEnv(light){
+  const c = document.createElement('canvas'); c.width = 1024; c.height = 512;
+  const x = c.getContext('2d');
+  const g = x.createLinearGradient(0, 0, 0, 512);
+  if (light){ g.addColorStop(0, '#ffffff'); g.addColorStop(.5, '#cfd4db'); g.addColorStop(1, '#6b7280'); }
+  else { g.addColorStop(0, '#1b1e24'); g.addColorStop(.5, '#07080a'); g.addColorStop(1, '#020203'); }
+  x.fillStyle = g; x.fillRect(0, 0, 1024, 512);
+  function soft(cx, cy, rx, ry, col, a){
+    x.save(); x.translate(cx, cy); x.scale(rx, ry);
+    const r = x.createRadialGradient(0, 0, 0, 0, 0, 1);
+    r.addColorStop(0, col); r.addColorStop(1, 'rgba(0,0,0,0)');
+    x.globalAlpha = a; x.fillStyle = r; x.beginPath(); x.arc(0, 0, 1, 0, Math.PI * 2); x.fill(); x.restore();
+  }
+  if (light){
+    soft(512, 90, 300, 70, '#ffffff', 1);
+    soft(200, 260, 70, 170, '#2b3038', .55);
+    soft(820, 240, 70, 170, '#2b3038', .5);
+    soft(512, 420, 400, 60, '#3a3f47', .6);
+  } else {
+    soft(512, 70, 280, 60, '#ffffff', 1);
+    soft(150, 220, 50, 150, '#eef3fb', .9);
+    soft(830, 230, 60, 160, '#9fc4ff', .85);
+    soft(640, 310, 140, 40, '#ffd9a0', .35);
+  }
+  const tex = new THREE.CanvasTexture(c);
+  tex.mapping = THREE.EquirectangularReflectionMapping; tex.encoding = THREE.sRGBEncoding;
+  const pm = new THREE.PMREMGenerator(renderer);
+  const out = pm.fromEquirectangular(tex).texture;
+  tex.dispose(); pm.dispose(); return out;
+}
+const envDark = makeEnv(false), envLight = makeEnv(true);
+scene.environment = envDark;
+/* model pivot: everything anatomical lives under `inner`; `world` rotates it around the construct's centre */
+const world = new THREE.Group(), inner = new THREE.Group();
+world.add(inner); scene.add(world);
+scene.add(new THREE.AmbientLight(0x3a4250, .5));
+const key = new THREE.DirectionalLight(0xffffff, 1.5); key.position.set(20, 40, 30); scene.add(key);
+const rim = new THREE.DirectionalLight(0x9fc4ff, 1.0); rim.position.set(-25, 10, -20); scene.add(rim);
+
+/* ---------- materials ---------- */
+const mTi    = new THREE.MeshStandardMaterial({ color: 0xb9c1cc, metalness: 1, roughness: .3,  side: THREE.DoubleSide });
+const mThread= new THREE.MeshStandardMaterial({ color: 0x9aa3ae, metalness: 1, roughness: .36 });
+const mRod   = new THREE.MeshStandardMaterial({ color: 0xd8dde4, metalness: 1, roughness: .18 });
+const mGold  = new THREE.MeshStandardMaterial({ color: 0xc9a35b, metalness: 1, roughness: .3 });
+const mPlate = new THREE.MeshStandardMaterial({ color: 0xa9b3bf, metalness: 1, roughness: .26 });
+const mDark  = new THREE.MeshStandardMaterial({ color: 0x1c1f24, metalness: .7, roughness: .55 });
+/* colour sets: [dark-stage colour, white-stage colour] — titanium goes to graphite black on white */
+const METAL = [
+  [mTi, 0xb9c1cc, 0x1e2126], [mThread, 0x9aa3ae, 0x15181c], [mRod, 0xd8dde4, 0x23272d],
+  [mPlate, 0xa9b3bf, 0x1e2126], [mGold, 0xc9a35b, 0xa8843c], [mDark, 0x1c1f24, 0x8a929e]
+];
+const lightU = { value: 0 };
+const boneMats = [];
+const hexSocket = (r, h) => new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 6), mDark);
+
+const scanY = { value: -100 }, scanAmt = { value: 0 }, dimU = { value: 1 };
+function boneMat(hex, base){
+  const m = new THREE.ShaderMaterial({
+    uniforms: { uColor: { value: new THREE.Color(hex) }, uOpacity: { value: 0 }, uBase: { value: base }, uScanY: scanY, uScanAmt: scanAmt, uDim: dimU, uLight: lightU },
+    vertexShader: `
+      varying vec3 vN; varying vec3 vV; varying float vY;
+      void main(){
+        vec4 wp = modelMatrix * vec4(position,1.0); vY = wp.y;
+        vec4 mv = viewMatrix * wp;
+        vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz);
+        gl_Position = projectionMatrix * mv;
+      }`,
+    fragmentShader: `
+      uniform vec3 uColor; uniform float uOpacity, uBase, uScanY, uScanAmt, uDim, uLight;
+      varying vec3 vN; varying vec3 vV; varying float vY;
+      void main(){
+        float f = 1.0 - abs(dot(normalize(vN), normalize(vV)));
+        f = pow(f, 2.0);
+        float d = (vY - uScanY) / 1.6;
+        float s = exp(-d*d) * uScanAmt;
+        float a = clamp((uBase*0.6 + f*0.9 + s*0.35) * uOpacity * uDim, 0.0, 1.0);
+        if (uLight > 0.5){
+          /* white stage: solid charcoal bone, studio-lit, bright rim so front occludes back */
+          vec3 n = normalize(vN); if (!gl_FrontFacing) n = -n;
+          vec3 L1 = normalize(vec3(-0.35, 0.65, 0.68)), L2 = normalize(vec3(0.6, -0.25, 0.35));
+          float dif = 0.32 + 0.68*max(dot(n, L1), 0.0) + 0.18*max(dot(n, L2), 0.0);
+          float rimf = pow(1.0 - abs(dot(n, normalize(vV))), 3.0);
+          vec3 V3 = normalize(vV), H = normalize(L1 + V3);
+          float spec = pow(max(dot(n, H), 0.0), 36.0)*0.22;
+          vec3 col = vec3(0.0) + vec3(0.06, 0.065, 0.07)*dif + vec3(0.9)*rimf*0.3 + vec3(spec)*0.7;
+          col = mix(col, vec3(1.0), (1.0 - uDim)*0.4);
+          gl_FragColor = vec4(col, 1.0);
+        } else {
+          vec3 col = uColor * (uBase + 1.2*f) + vec3(1.0,0.84,0.55) * s * (0.25 + f);
+          gl_FragColor = vec4(col * a, 1.0);
+        }
+      }`,
+    transparent: true, depthWrite: false, blending: THREE.AdditiveBlending
+  });
+  boneMats.push(m); return m;
+}
+let lightMode = false;
+function setLight(on){
+  if (on === lightMode) return; lightMode = on;
+  lightU.value = on ? 1 : 0;
+  renderer.setClearColor(on ? 0xffffff : 0x000000, 1);
+  scene.environment = on ? envLight : envDark;
+  renderer.toneMappingExposure = on ? 1.0 : 1.05;
+  METAL.forEach(([m, d, l]) => m.color.setHex(on ? l : d));
+  boneMats.forEach(m => {
+    m.blending = on ? THREE.NormalBlending : THREE.AdditiveBlending;
+    m.transparent = !on; m.depthWrite = on; m.side = on ? THREE.DoubleSide : THREE.FrontSide;
+    m.needsUpdate = true;
+  });
+}
+
+/* ---------- anatomy data ---------- */
+const NAMES = ['S1','L5','L4','L3','L2','L1','T12','T11','T10','T9','T8','T7','T6','T5','T4','T3','T2','T1','C7','C6','C5','C4','C3','C2','C1'];
+const SCREW = {S1:[7.5,40],L5:[7,45],L4:[6.5,45],L3:[6.5,45],L2:[6.5,45],L1:[6,45],T12:[6,40],T11:[5.5,40],T10:[5.5,40],T9:[5.5,40],
+  T8:[5,35],T7:[5,35],T6:[5,35],T5:[4.5,35],T4:[4.5,30],T3:[4.5,30],T2:[4.5,30],T1:[4.5,30],C7:[4,24],C6:[3.5,14],C5:[3.5,14],C4:[3.5,14],C3:[3.5,14],C2:[3.5,26],C1:[3.5,26]};
+const ANG = {S1:[25,0],L5:[18,0],L4:[15,0],L3:[12,0],L2:[10,0],L1:[8,0],C7:[30,0],C6:[-25,30],C5:[-25,30],C4:[-25,30],C3:[-25,30],C2:[20,25],C1:[15,10]};
+const typeOf = n => n === 'C1' ? 'C1 lateral kitle vidası' : n === 'C2' ? 'C2 pars vidası' : /^C[3-6]$/.test(n) ? 'Lateral kitle vidası' : 'Pedikül vidası';
+
+function dims(n){
+  const r = n[0], k0 = +n.slice(1);
+  if (r === 'S') return { w:2.6, d:1.85, h:2.9, disc:1.1, canal:1.15, ped:.55, reg:'S' };
+  if (r === 'L'){ const k = 5 - k0; return { w:2.45-.08*k, d:1.75-.04*k, h:2.75-.05*k, disc:1.05-.05*k, canal:1.1, ped:.5, reg:'L' }; }
+  if (r === 'T'){ const k = 12 - k0; return { w:2.0-.05*k, d:1.55-.04*k, h:2.35-.07*k, disc:.62-.01*k, canal:.82, ped:.38, reg:'T' }; }
+  if (k0 >= 3){ const k = 7 - k0; return { w:1.25-.07*k, d:.82, h:1.35-.04*k, disc:.5, canal:1.0, ped:.3, reg:'C' }; }
+  if (k0 === 2) return { w:1.05, d:.85, h:1.6, disc:.45, canal:1.05, ped:.32, reg:'C2' };
+  return { w:1.0, d:.8, h:1.0, disc:.2, canal:1.15, ped:.3, reg:'C1' };
+}
+
+const levels = NAMES.map((name, i) => ({ name, i, D: dims(name) }));
+let yAcc = 0;
+levels.forEach((L, i) => { if (i > 0){ const P = levels[i-1]; yAcc += P.D.h/2 + L.D.disc + L.D.h/2; } L.y = yAcc; });
+const anchors = [[0,1.2],[3,-2.2],[11,3.6],[21,-.9],[24,.2]];   // lordosis · kyphosis · lordosis
+function zAt(i){
+  for (let k = 0; k < anchors.length - 1; k++){
+    const [a, za] = anchors[k], [b, zb] = anchors[k+1];
+    if (i <= b){ const s = (i - a) / (b - a); return lerp(za, zb, (1 - Math.cos(Math.PI * s)) / 2); }
+  }
+  return anchors[anchors.length-1][1];
+}
+levels.forEach(L => L.z = zAt(L.i));
+levels.forEach((L, i) => {
+  const a = levels[Math.max(0, i-1)], b = levels[Math.min(24, i+1)];
+  L.theta = Math.atan2(b.z - a.z, b.y - a.y);
+  L.q = new THREE.Quaternion().setFromAxisAngle(V(1,0,0), L.theta);
+});
+function levelPos(f){
+  f = clamp(f, 0, 24); const a = Math.floor(f), b = Math.min(24, a+1), s = f - a;
+  return V(0, lerp(levels[a].y, levels[b].y, s), lerp(levels[a].z, levels[b].z, s));
+}
+
+/* ---------- vertebra geometry ---------- */
+const SPH = new THREE.SphereGeometry(1, 18, 14);
+function bodyGeo(h){
+  const g = new THREE.CylinderGeometry(1, 1, h, 36, 6);
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++){
+    let x = p.getX(i), y = p.getY(i), z = p.getZ(i);
+    const t = y / (h/2), w = 1 - .09 * (1 - t*t);
+    x *= w; z *= w; if (z > 0) z *= .72;
+    p.setXYZ(i, x, y, z);
+  }
+  g.computeVertexNormals(); return g;
+}
+function transGeo(len, r){ const g = new THREE.CylinderGeometry(r*.6, r, len, 10); g.rotateZ(-Math.PI/2); g.translate(len/2, 0, 0); return g; }
+function spinGeo(len){ const g = new THREE.CylinderGeometry(.5*.55, .5, len, 12); g.rotateX(Math.PI/2); g.translate(0, 0, len/2); return g; }
+function spinousP(n, R){
+  if (R === 'S') return { len:1.4, tilt:.55, w:.45, h:.9 };
+  if (R === 'L') return { len:2.5, tilt:.22, w:.42, h:1.35 };
+  if (R === 'T') return { len:3.0, tilt:.95, w:.34, h:.6 };
+  if (n === 'C7') return { len:2.3, tilt:.35, w:.34, h:.55 };
+  if (n === 'C2') return { len:1.7, tilt:.3, w:.5, h:.85 };
+  return { len:1.25, tilt:.3, w:.28, h:.42 };
+}
+function transP(R){
+  if (R === 'L') return { len:2.3, back:.12, r:.3, up:0 };
+  if (R === 'T') return { len:1.9, back:.62, r:.32, up:.15 };
+  if (R === 'S') return null;
+  return { len:1.05, back:-.25, r:.24, up:0 };
+}
+const RIB_RS = {1:.55,2:.68,3:.8,4:.9,5:.97,6:1,7:1,8:1,9:.97,10:.92,11:.7,12:.5};
+
+function buildVertebra(L){
+  const D = L.D, R = D.reg, n = L.name, mat = L.mat;
+  const g = new THREE.Group();
+  const add = (geo, p, r, s, m) => { const me = new THREE.Mesh(geo, m || mat); if (p) me.position.set(p[0],p[1],p[2]); if (r) me.rotation.set(r[0],r[1],r[2]); if (s) me.scale.set(s[0],s[1],s[2]); g.add(me); return me; };
+  if (R === 'C1'){
+    add(new THREE.TorusGeometry(1.45, .26, 10, 44), [0,0,.95], [Math.PI/2,0,0], [1,1,1.5]);
+    for (const s of [-1, 1]){
+      add(SPH, [s*1.3, 0, .75], null, [.5,.55,.7]);
+      add(transGeo(1.5, .24), [s*1.75, 0, .55], [0, s > 0 ? 0 : Math.PI, 0]);
+    }
+    add(SPH, [0, 0, 2.42], null, [.3,.3,.25]);
+    return { g, cz:.95, px:1.3, yP:0 };
+  }
+  const cz = D.d*.72 + D.canal*.95;
+  const px = D.canal*.85 + D.ped*.75;
+  const yP = D.h*.12;
+  add(bodyGeo(D.h), [0,0,0], null, [D.w, 1, D.d]);
+  const pz0 = D.d*.45, pl = cz - pz0;
+  for (const s of [-1, 1]) add(new THREE.CylinderGeometry(D.ped, D.ped*1.1, pl, 12), [s*px, yP, (pz0+cz)/2], [Math.PI/2, 0, 0]);
+  const tube = D.ped*.7;
+  add(new THREE.TorusGeometry(px, tube, 10, 30, Math.PI), [0, yP, cz], [Math.PI/2, 0, 0], [1, 1, (D.h*.32)/tube]);
+  const sp = spinousP(n, R);
+  add(spinGeo(sp.len), [0, yP, cz + px*.95], [sp.tilt, 0, 0], [sp.w, sp.h, 1]);
+  const tp = transP(R);
+  const isC = R === 'C' || R === 'C2';
+  for (const s of [-1, 1]){
+    if (tp) add(transGeo(tp.len, tp.r), [s*px, yP + tp.up, cz - D.ped*.2], [0, s > 0 ? -tp.back : Math.PI + tp.back, 0]);
+    if (isC) add(SPH, [s*(px+.1), 0, cz], null, [.45, D.h*.55, .6]);
+    else {
+      add(SPH, [s*px, D.h*.38, cz+.15], null, [D.ped*.9, D.h*.42, D.ped]);
+      add(SPH, [s*px*.85, -D.h*.32, cz+px*.6], null, [D.ped*.8, D.h*.4, D.ped*.9]);
+    }
+  }
+  if (R === 'C2') add(new THREE.CylinderGeometry(.38, .45, 1.3, 16), [0, D.h/2 + .55, -.1]);
+  if (R === 'T'){
+    const k = +n.slice(1), Rs = RIB_RS[k];
+    L.ribMat = boneMat(0xb8c6de, .04);
+    for (const s of [-1, 1]){
+      let pts = [
+        V(s*(px+1.5), yP+.1, cz-.1),
+        V(s*4.3*Rs, yP-.3*Rs, cz+.5),
+        V(s*7.6*Rs, yP-1.5*Rs, -.6*Rs),
+        V(s*8.4*Rs, yP-3.2*Rs, -5.6*Rs),
+        V(s*5.4*Rs, yP-4.6*Rs, -10*Rs),
+        V(s*2.0*Rs, yP-5.2*Rs, -11.6*Rs)
+      ];
+      if (k === 11) pts = pts.slice(0, 4);
+      if (k === 12) pts = pts.slice(0, 3);
+      add(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 40, .26*(.7+.3*Rs), 6), null, null, null, L.ribMat);
+    }
+  }
+  if (R === 'S'){
+    const sh = new THREE.Shape();
+    sh.moveTo(-4.8, .2);
+    sh.quadraticCurveTo(0, 1.0, 4.8, .2);
+    sh.bezierCurveTo(4.7, -2.6, 2.6, -5.6, 1.6, -8.4);
+    sh.lineTo(.9, -10.1);
+    sh.quadraticCurveTo(0, -10.6, -.9, -10.1);
+    sh.lineTo(-1.6, -8.4);
+    sh.bezierCurveTo(-2.6, -5.6, -4.7, -2.6, -4.8, .2);
+    for (let k = 0; k < 4; k++) for (const s of [-1, 1]){
+      const hp = new THREE.Path(); hp.absarc(s*(1.45 - k*.12), -2.2 - k*1.85, .38 - k*.05, 0, Math.PI*2, true); sh.holes.push(hp);
+    }
+    const sg = new THREE.ExtrudeGeometry(sh, { depth: 2.6, bevelEnabled: true, bevelThickness: .2, bevelSize: .2, bevelSegments: 2, curveSegments: 20 });
+    sg.translate(0, 0, -1.3);
+    const p = sg.attributes.position;
+    for (let i = 0; i < p.count; i++){
+      const y = p.getY(i), t = clamp(-y/10, 0, 1);
+      p.setZ(i, p.getZ(i) * lerp(1.25, .5, t) - t*t*2.2);
+    }
+    sg.computeVertexNormals();
+    add(sg, [0, -D.h*.3, -.3], [-.75, 0, 0]);
+  }
+  return { g, cz, px, yP };
+}
+
+levels.forEach(L => {
+  L.mat = boneMat(0xcfdcf0, .1);
+  const b = buildVertebra(L);
+  L.b = b; L.group = b.g;
+  L.group.position.set(0, L.y, L.z); L.group.quaternion.copy(L.q);
+  inner.add(L.group);
+});
+
+/* ---------- screws ---------- */
+const threadCache = new Map();
+function threadGeo(ro, len){
+  const key = ro.toFixed(3) + '_' + len.toFixed(2);
+  if (threadCache.has(key)) return threadCache.get(key);
+  const rc = ro*.62, tube = (ro - rc)*.8, pitch = ro > .33 ? .3 : (ro > .24 ? .24 : .18);
+  const Lt = len*.9, turns = Lt / pitch;
+  class Helix extends THREE.Curve {
+    getPoint(u, tg = new THREE.Vector3()){
+      const a = u * turns * Math.PI * 2;
+      const taper = u > .82 ? 1 - (u - .82)/.18*.75 : 1;
+      const r = (rc + tube*.3) * taper;
+      return tg.set(Math.cos(a)*r, -.06*len - u*Lt, Math.sin(a)*r);
+    }
+  }
+  const out = { g: new THREE.TubeGeometry(new Helix(), Math.ceil(turns*20), tube, 5, false), rc };
+  threadCache.set(key, out); return out;
+}
+function tulip(tw, th){
+  const g = new THREE.Group();
+  const base = new THREE.Mesh(new THREE.CylinderGeometry(tw, tw*.88, th*.38, 28), mTi); base.position.y = th*.19; g.add(base);
+  for (const c of [Math.PI/2, Math.PI*1.5]){
+    for (const rr of [tw, tw*.7]){
+      const arm = new THREE.Mesh(new THREE.CylinderGeometry(rr, rr, th*.62, 20, 1, true, c - .85, 1.7), mTi);
+      arm.position.y = th*.69; g.add(arm);
+    }
+    const capG = new THREE.RingGeometry(tw*.7, tw, 12, 1, Math.PI/2 - c - .85, 1.7); capG.rotateX(Math.PI/2);
+    const cap = new THREE.Mesh(capG, mTi); cap.position.y = th; g.add(cap);
+  }
+  return g;
+}
+function makeScrew(spec, cervical, plateType){
+  const ro = spec[0]/20*1.12, len = spec[1]/10;
+  const root = new THREE.Group(), shaft = new THREE.Group(), spin = new THREE.Group();
+  shaft.add(spin); root.add(shaft);
+  const th = threadGeo(ro, len), rc = th.rc;
+  const core = new THREE.CylinderGeometry(rc, rc*.9, len*.88, 16); core.translate(0, -len*.44, 0);
+  spin.add(new THREE.Mesh(core, mThread));
+  const tip = new THREE.ConeGeometry(rc*.9, len*.12, 16); tip.rotateX(Math.PI); tip.translate(0, -len*.94, 0);
+  spin.add(new THREE.Mesh(tip, mThread));
+  spin.add(new THREE.Mesh(th.g, mThread));
+  const out = { root, shaft, spin, len, ro };
+  if (plateType){
+    const head = new THREE.Mesh(new THREE.CylinderGeometry(ro*1.7, ro*1.5, .14, 22), mGold); head.position.y = .07; spin.add(head);
+    const hx = hexSocket(ro*.8, .06); hx.position.y = .15; spin.add(hx);
+    out.th = 0; return out;
+  }
+  spin.add(new THREE.Mesh(new THREE.SphereGeometry(ro*1.25, 20, 14), mTi));
+  const tw = cervical ? .45 : .62, thh = cervical ? 1.0 : 1.35;
+  const tul = tulip(tw, thh); root.add(tul);
+  /* driver: shaft + hex collar, seated in the tulip, spins with it, retracts after seating */
+  const drv = new THREE.Group();
+  const dsh = new THREE.Mesh(new THREE.CylinderGeometry(tw*.42, tw*.42, 7.5, 12), mTi); dsh.position.y = thh + 3.75; drv.add(dsh);
+  const col = new THREE.Mesh(new THREE.CylinderGeometry(tw*.95, tw*.95, 1.5, 6), mThread); col.position.y = thh + 2.3; drv.add(col);
+  const grip = new THREE.Mesh(new THREE.CylinderGeometry(tw*1.15, tw*1.15, 1.2, 8), mDark); grip.position.y = thh + 6.6; drv.add(grip);
+  tul.add(drv);
+  const set = new THREE.Group();
+  set.add(new THREE.Mesh(new THREE.CylinderGeometry(tw*.68, tw*.68, thh*.22, 20), mGold));
+  const hx = hexSocket(tw*.34, thh*.1); hx.position.y = thh*.12; set.add(hx);
+  root.add(set);
+  out.th = thh; out.set = set; out.tul = tul; out.drv = drv; return out;
+}
+
+const screws = [];
+levels.forEach(L => {
+  const D = L.D, b = L.b, n = L.name, isC = n[0] === 'C';
+  let ent;
+  if (n === 'C1') ent = s => V(s*1.3, 0, 1.45);
+  else if (isC) ent = s => V(s*(b.px+.1), 0, b.cz+.6);
+  else ent = s => V(s*b.px, b.yP, b.cz + D.ped);
+  const [m, c] = ANG[n] || [7, 0];
+  const mr = m*Math.PI/180, cr = c*Math.PI/180;
+  const off = V(0, L.y, L.z);
+  const NW = V(0,0,1).applyQuaternion(L.q), TW = V(0,1,0).applyQuaternion(L.q);
+  L.seats = {};
+  for (const s of [-1, 1]){
+    const dV = V(-s*Math.sin(mr)*Math.cos(cr), Math.sin(cr), -Math.cos(mr)*Math.cos(cr)).normalize();
+    const entW = ent(s).applyQuaternion(L.q).add(off);
+    const dirW = dV.clone().applyQuaternion(L.q);
+    const S = makeScrew(SCREW[n], isC, false);
+    S.root.quaternion.copy(L.q).multiply(qRx90);
+    S.shaft.quaternion.setFromUnitVectors(V(0,-1,0), V(dV.x, dV.z, -dV.y));
+    inner.add(S.root);
+    Object.assign(S, { entW, dirW, travel: S.len + 2.6, turns: 3, i: L.i, s,
+      t0: T0 + L.i*LV + (s > 0 ? .04 : 0), tSet: T0 + RL + L.i*LV + .1 });
+    L.seats[s] = entW.clone().addScaledVector(NW, S.th*.5);
+    L.NW = NW; L.TW = TW;
+    screws.push(S);
+  }
+});
+
+/* ---------- skull ---------- */
+const C1 = levels[24];
+/* cranium: one continuous surface = ellipsoid + anatomical landmarks as smooth bumps/dents (cm units, +z posterior) */
+const SA = 7.0, SB = 6.6, SC = 8.8, BASE = -6.0;
+const skullC = V(0, C1.y + .5 - BASE, C1.z - 2.0);
+const nrm = (x, y, z) => V(x, y, z).normalize();
+const gauss = (u, c, s) => Math.exp(-(1 - u.dot(c)) / s);
+const FACE_C = nrm(0, -.72, -.69);
+/* [direction, amplitude, width, crisp?] — crisp features get a flat floor and a defined rim (orbits, nasal aperture) */
+const FEAT = [
+  [nrm(0, -.1, 1), .5, .25],          // occipital bun
+  [nrm(0, -.3, .95), .15, .03],       // external occipital protuberance
+  [nrm(0, .3, -.92), .8, .12],        // frontal boss: vertical human forehead
+  [nrm(0, .85, .2), .3, .3],          // high vertex
+  [nrm(0, -.72, -.62), .5, .04],      // alveolar (maxilla) prominence above the teeth
+  [nrm(0, -.69, -.72), -1.0, .022, 1],// nasal aperture (pear-shaped hole)
+  [nrm(0, -.5, -.86), .45, .012],     // nasal bones ridge
+  [nrm(0, -.36, -.93), .25, .03]      // glabella
+];
+for (const s of [-1, 1]){
+  FEAT.push(
+    [nrm(s*.95, .3, .1), .35, .3],        // parietal eminence
+    [nrm(s*1, -.15, -.25), -.4, .15],     // temporal fossa
+    [nrm(s*.72, -.68, .15), 1.0, .05],    // mastoid process
+    [nrm(s*.42, -.25, -.87), .5, .05],    // supraorbital ridge
+    [nrm(s*.44, -.37, -.82), -1.5, .03, 1], // orbit (medial half)
+    [nrm(s*.56, -.37, -.76), -1.5, .03, 1], // orbit (lateral half) → rounded-rectangular socket
+    [nrm(s*.66, -.42, -.6), .9, .03],       // lateral orbital rim / frontal process of zygoma
+    [nrm(s*1, -.4, -.15), -.9, .06],        // temporal fossa under the arch
+    [nrm(s*.68, -.6, -.45), .9, .045]     // zygomatic body
+  );
+}
+const smax = (a, b, k) => Math.max(a, b) + k*Math.log(1 + Math.exp(-Math.abs(a - b)/k));
+function skullPoint(u){
+  const p = V(u.x*SA, u.y*SB, u.z*SC);
+  const q = Math.pow(ss(.1, -1, u.y), 1.4), back = ss(-.4, .6, u.z);
+  p.x *= 1 - .22*q*(.2 + .8*back);
+  p.z *= 1 - .15*q*back;
+  const w = gauss(u, FACE_C, .2);
+  p.y -= 4.9*w; p.x *= 1 - .22*w; p.z -= .3*w;
+  const bw = ss(-.5, -.1, u.z);
+  if (bw > 0) p.y = lerp(p.y, smax(p.y, BASE, .5), bw);
+  let d = .08*Math.sin(7*u.x + 3)*Math.sin(6*u.y)*Math.sin(5*u.z + 1);
+  for (const f of FEAT){ const g = gauss(u, f[0], f[2]); d += f[1]*(f[3] ? ss(.22, .7, g) : g); }
+  const n = V(u.x/SA, u.y/SB, u.z/SC).normalize();
+  return p.addScaledVector(n, d);
+}
+function skullNormal(u){
+  const t1 = (Math.abs(u.y) < .9 ? V(0,1,0) : V(1,0,0)).cross(u).normalize();
+  const t2 = u.clone().cross(t1), e = 2e-3;
+  const d1 = skullPoint(u.clone().addScaledVector(t1, e).normalize()).sub(skullPoint(u.clone().addScaledVector(t1, -e).normalize()));
+  const d2 = skullPoint(u.clone().addScaledVector(t2, e).normalize()).sub(skullPoint(u.clone().addScaledVector(t2, -e).normalize()));
+  const n = d1.cross(d2).normalize();
+  return n.dot(u) < 0 ? n.negate() : n;
+}
+function profileTube(points, prof, segs, radial){
+  const curve = new THREE.CatmullRomCurve3(points, false, 'centripetal');
+  const pos = [], idx = [];
+  for (let i = 0; i <= segs; i++){
+    const s = i/segs, c = curve.getPointAt(s), t = curve.getTangentAt(s).normalize();
+    const ref = V(0,1,0).lerp(V(0,0,1), Math.abs(t.y)).normalize();
+    const m = t.clone().cross(ref).normalize(), M = m.clone().cross(t).normalize();
+    const pr = prof(s);
+    for (let j = 0; j <= radial; j++){
+      const th = j/radial*Math.PI*2, ca = Math.cos(th)*pr.a, sb = Math.sin(th)*pr.b;
+      pos.push(c.x + m.x*ca + M.x*sb, c.y + m.y*ca + M.y*sb, c.z + m.z*ca + M.z*sb);
+    }
+  }
+  for (let i = 0; i < segs; i++) for (let j = 0; j < radial; j++){
+    const a = i*(radial+1) + j, b = a + radial + 1;
+    idx.push(a, b, a+1, b, b+1, a+1);
+  }
+  const g = new THREE.BufferGeometry();
+  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+  g.setIndex(idx); g.computeVertexNormals();
+  return g;
+}
+const skullMat = boneMat(0xd2dcec, .07);
+const skull = new THREE.Group(); skull.position.copy(skullC); inner.add(skull);
+(function(){
+  const g = new THREE.SphereGeometry(1, 112, 84);
+  const p = g.attributes.position, nm = g.attributes.normal, u = V(0,0,0);
+  for (let i = 0; i < p.count; i++){
+    u.set(p.getX(i), p.getY(i), p.getZ(i)).normalize();
+    const q = skullPoint(u), n = skullNormal(u);
+    p.setXYZ(i, q.x, q.y, q.z); nm.setXYZ(i, n.x, n.y, n.z);
+  }
+  skull.add(new THREE.Mesh(g, skullMat));
+  /* mandible: ramus (flat plate) → angle → body → chin, one lofted profile */
+  const half = [[5.6,-4.6,-.6],[5.5,-7.5,-1.0],[5.3,-10.4,-1.4],[4.7,-11.3,-3.4],[3.3,-12.0,-5.6],[1.5,-12.4,-7.1]];
+  const path = half.map(([x,y,z]) => V(-x,y,z));
+  path.push(V(0,-12.5,-7.5));
+  half.slice().reverse().forEach(([x,y,z]) => path.push(V(x,y,z)));
+  skull.add(new THREE.Mesh(profileTube(path, s => {
+    const r = Math.min(s, 1-s), ram = 1 - ss(.1, .24, r), chin = Math.exp(-Math.pow((s-.5)/.1, 2));
+    return { a: lerp(.5, .35, ram), b: lerp(lerp(.95, 1.1, chin), 1.6, ram) };
+  }, 140, 18), skullMat));
+  for (const s of [-1, 1]){
+    /* zygomatic arch: a bar standing off the temporal bone, from the cheek to above the ear */
+    const arch = new THREE.CatmullRomCurve3([V(s*5.2,-5.2,-5.6), V(s*6.4,-4.9,-3.4), V(s*6.8,-4.7,-.8), V(s*6.3,-4.4,1.4), V(s*5.4,-4.0,2.4)]);
+    skull.add(new THREE.Mesh(new THREE.TubeGeometry(arch, 40, .36, 10), skullMat));
+    const cd = new THREE.Mesh(SPH, skullMat); cd.position.set(s*5.6, -4.4, .1); cd.scale.set(.6, .5, .9); skull.add(cd);
+    const co = new THREE.Mesh(new THREE.ConeGeometry(.5, 1.8, 10), skullMat); co.position.set(s*5.3, -4.8, -3.2); co.rotation.x = -.35; skull.add(co);
+  }
+  /* dental arches */
+  /* dental arches: blocky teeth, upper row slightly forward of the lower (overjet) */
+  const tooth = new THREE.BoxGeometry(1, 1, 1, 1, 1, 1);
+  for (let k = 0; k < 14; k++){
+    const x = -2.85 + 5.7*(k + .5)/14, front = 1 - Math.min(1, Math.abs(x)/2.85);
+    for (const [y, sc, dz] of [[-9.55, 1, 0], [-10.35, .95, .3]]){
+      const t = new THREE.Mesh(tooth, skullMat);
+      t.position.set(x*sc, y, -7.45 + .55*x*x*sc + dz);
+      t.scale.set(.34, .62 + .18*front, .32 + .2*(1 - front));
+      t.rotation.y = -Math.atan(1.1*x*sc); skull.add(t);
+    }
+  }
+})();
+
+/* ---------- occipital plate ---------- */
+const u0 = nrm(0, -.4, .917);
+const nPl = skullNormal(u0);
+const Pw = skullPoint(u0).add(skullC);
+const vPl = V(0,1,0).sub(nPl.clone().multiplyScalar(nPl.y)).normalize();
+const uPl = vPl.clone().cross(nPl);
+const plateRoot = new THREE.Group();
+plateRoot.position.copy(Pw).addScaledVector(nPl, .05);
+plateRoot.quaternion.setFromRotationMatrix(new THREE.Matrix4().makeBasis(uPl, vPl, nPl));
+inner.add(plateRoot);
+const plateInner = new THREE.Group(); plateRoot.add(plateInner);
+const bend = (x, y) => x*x/13.2 + y*y/14;
+(function(){
+  const s = new THREE.Shape();
+  s.moveTo(-.65, 1.9);
+  s.absarc(0, 1.9, .65, Math.PI, 0, true);
+  s.lineTo(.65, -1.1); s.lineTo(2.2, -1.1);
+  s.absarc(2.2, -1.6, .5, Math.PI/2, -Math.PI/2, true);
+  s.lineTo(.65, -2.1); s.lineTo(.65, -2.4);
+  s.absarc(0, -2.4, .65, 0, -Math.PI, true);
+  s.lineTo(-.65, -2.1); s.lineTo(-2.2, -2.1);
+  s.absarc(-2.2, -1.6, .5, -Math.PI/2, -Math.PI*1.5, true);
+  s.lineTo(-.65, -1.1); s.lineTo(-.65, 1.9);
+  for (const hy of [1.7, .45, -1.6]){ const h = new THREE.Path(); h.absarc(0, hy, .28, 0, Math.PI*2, true); s.holes.push(h); }
+  const g = new THREE.ExtrudeGeometry(s, { depth: .22, bevelEnabled: true, bevelThickness: .05, bevelSize: .05, bevelSegments: 2, curveSegments: 24 });
+  const p = g.attributes.position;
+  for (let i = 0; i < p.count; i++) p.setZ(i, p.getZ(i) - bend(p.getX(i), p.getY(i)));
+  g.computeVertexNormals();
+  plateInner.add(new THREE.Mesh(g, mPlate));
+})();
+const connSets = [];
+for (const s of [-1, 1]){
+  const zc = .27 - bend(2.2, -1.6) + .3;
+  const cg = new THREE.CylinderGeometry(.42, .42, .6, 24); cg.rotateX(Math.PI/2);
+  const cm = new THREE.Mesh(cg, mTi); cm.position.set(s*2.2, -1.6, zc); plateInner.add(cm);
+  const sg = new THREE.CylinderGeometry(.3, .3, .16, 20); sg.rotateX(Math.PI/2);
+  const sm = new THREE.Mesh(sg, mGold); sm.position.set(s*2.2, -1.6, zc + .38); plateRoot.add(sm);
+  connSets.push({ m: sm, z: zc + .38, t: PS + .95 + (s > 0 ? .08 : 0) });
+}
+const plateScrews = [];
+[1.7, .45, -1.6].forEach((hy, k) => {
+  const S = makeScrew([4.5, 10], true, true);
+  S.root.quaternion.copy(qRx90);
+  S.base = V(0, hy, .27 - bend(0, hy));
+  S.t0 = PS + k*.25;
+  plateRoot.add(S.root); plateScrews.push(S);
+});
+plateRoot.updateMatrixWorld(true);
+
+/* ---------- rods ---------- */
+const TS = 900, RS = 14;
+const rodTipGeo = new THREE.SphereGeometry(1, 16, 12);
+const rods = [-1, 1].map(s => {
+  const seats = levels.map(L => L.seats[s]);
+  const start = seats[0].clone().addScaledVector(levels[0].TW, -1.0);
+  const m1 = seats[24].clone().addScaledVector(C1.TW, .6).addScaledVector(C1.NW, .6);
+  const pre = plateRoot.localToWorld(V(s*2.2, -2.9, .27 - bend(2.2, -2.9) + .3));
+  const end = plateRoot.localToWorld(V(s*2.2, -1.15, .27 - bend(2.2, -1.15) + .3));
+  const curve = new THREE.CatmullRomCurve3([start, ...seats, m1, pre, end], false, 'centripetal');
+  const samp = curve.getSpacedPoints(3000);
+  const seatU = seats.map(p => { let bi = 0, bd = 1e9; for (let i = 0; i < samp.length; i++){ const d = samp[i].distanceToSquared(p); if (d < bd){ bd = d; bi = i; } } return bi/3000; });
+  const uT1 = seatU[17], uC7 = seatU[18];
+  const rodR = u => lerp(.32, .21, ss(uT1, uC7, u));
+  const geo = new THREE.TubeGeometry(curve, TS, 1, RS, false);
+  const pos = geo.attributes.position, tmp = V(0,0,0);
+  for (let i = 0; i <= TS; i++){
+    const u = i/TS, c = curve.getPointAt(u), r = rodR(u);
+    for (let j = 0; j <= RS; j++){ const k = i*(RS+1) + j; tmp.fromBufferAttribute(pos, k).sub(c).multiplyScalar(r).add(c); pos.setXYZ(k, tmp.x, tmp.y, tmp.z); }
+  }
+  const mesh = new THREE.Mesh(geo, mRod); mesh.frustumCulled = false; inner.add(mesh);
+  const tip = new THREE.Mesh(rodTipGeo, mRod); inner.add(tip);
+  const cap = new THREE.Mesh(rodTipGeo, mRod); cap.position.copy(start); cap.scale.setScalar(rodR(0)); inner.add(cap);
+  return { curve, seatU, rodR, mesh, tip, cap };
+});
+function rodU(R, t){
+  const f = (t - T0 - RL) / LV;
+  let u;
+  if (f < 0) u = R.seatU[0] * clamp(1 + f, 0, 1);
+  else if (f >= 24) u = R.seatU[24];
+  else { const a = Math.floor(f); u = lerp(R.seatU[a], R.seatU[a+1], f - a); }
+  const e = ss(RX, RX + .75, t);
+  return lerp(u, 1, e);
+}
+
+/* ---------- dust ---------- */
+const dust = (function(){
+  const N = 520, a = new Float32Array(N*3);
+  for (let i = 0; i < N; i++){ a[i*3] = (Math.random()-.5)*90; a[i*3+1] = -15 + Math.random()*105; a[i*3+2] = -40 + Math.random()*70; }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(a, 3));
+  const m = new THREE.PointsMaterial({ color: 0x8fa3c0, size: .16, transparent: true, opacity: 0, depthWrite: false, blending: THREE.AdditiveBlending });
+  const p = new THREE.Points(g, m); scene.add(p); return p;
+})();
+
+/* ---------- bounds / camera ---------- */
+const botY = levels[0].y - 9.5, topY = skullC.y + SB + .5;
+let fitD = 150;
+function resize(){
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h; camera.updateProjectionMatrix();
+  const tanH = Math.tan(THREE.MathUtils.degToRad(camera.fov/2));
+  fitD = ((topY - botY) * .56) / tanH;
+  if (curPhase === 'logo') centerBrand();
+}
+const azAt = t => .5 + .1*(Math.min(t, HM) - SK);
+function poseBuild(t){
+  const f = clamp((t - T0)/LV + .3, 0, 24), p = levelPos(f), r = f/24;
+  const intro = 1 - ss(0, T0 + .9, t);
+  const tgt = V(0, p.y + 1.2, p.z + 1.6);
+  const dist = lerp(30, 25, r) + intro*14, az = lerp(.9, .5, r);
+  return { tgt, pos: V(dist*Math.sin(az), tgt.y + lerp(-2, 3, r) - intro*4, tgt.z + dist*Math.cos(az)) };
+}
+function poseSkull(t){
+  const tgt = V(0, skullC.y - 3, skullC.z + 2.5), az = azAt(t);
+  return { tgt, pos: V(40*Math.sin(az), tgt.y + 6, tgt.z + 40*Math.cos(az)) };
+}
+function poseReveal(t){
+  const tgt = V(0, (topY + botY)/2, 1.5), az = azAt(t);
+  return { tgt, pos: V(fitD*Math.sin(az), tgt.y + fitD*.12, tgt.z + fitD*Math.cos(az)) };
+}
+const mixPose = (a, b, w) => ({ tgt: a.tgt.lerp(b.tgt, w), pos: a.pos.lerp(b.pos, w) });
+/* ---------- model rotation on the white stage: auto-spin + drag ---------- */
+const PITCH_MAX = THREE.MathUtils.degToRad(12);
+const pivot = V(0, (topY + botY)/2, 1.5);
+world.position.copy(pivot); inner.position.copy(pivot).negate();
+const rot = { yaw: 0, pitch: 0, vyaw: 0, dragging: false, idle: 0, px: 0, py: 0 };
+function updateRotation(dt, t){
+  const home = t >= HM;
+  if (!home){ rot.yaw = 0; rot.pitch = 0; rot.vyaw = 0; world.quaternion.identity(); return; }
+  if (rot.dragging){ rot.idle = 0; }
+  else {
+    rot.idle += dt;
+    rot.yaw += rot.vyaw*dt; rot.vyaw *= Math.pow(.08, dt);          // inertia after release
+    if (rot.idle > 2.5) rot.yaw -= .12*dt*ss(2.5, 4, rot.idle);      // clockwise auto-spin resumes
+    rot.pitch *= Math.pow(.35, dt);                                   // tilt settles back
+  }
+  const az = azAt(t);
+  const right = V(Math.cos(az), 0, -Math.sin(az));                    // camera's right axis
+  const qp = new THREE.Quaternion().setFromAxisAngle(right, rot.pitch);
+  const qy = new THREE.Quaternion().setFromAxisAngle(V(0,1,0), rot.yaw);
+  world.quaternion.copy(qp).multiply(qy);
+}
+canvas.addEventListener('pointerdown', e => {
+  if (curPhase !== 'home') return;
+  rot.dragging = true; rot.vyaw = 0; rot.px = e.clientX; rot.py = e.clientY;
+  body.classList.add('dragging'); canvas.setPointerCapture(e.pointerId);
+});
+canvas.addEventListener('pointermove', e => {
+  if (!rot.dragging) return;
+  const dx = e.clientX - rot.px, dy = e.clientY - rot.py; rot.px = e.clientX; rot.py = e.clientY;
+  const k = 2*Math.PI/Math.max(480, window.innerWidth);                // one screen width ≈ one full turn
+  rot.yaw += dx*k; rot.vyaw = dx*k*40;
+  rot.pitch = clamp(rot.pitch + dy*k*.6, -PITCH_MAX, PITCH_MAX);
+});
+const endDrag = () => { if (!rot.dragging) return; rot.dragging = false; body.classList.remove('dragging'); };
+canvas.addEventListener('pointerup', endDrag); canvas.addEventListener('pointercancel', endDrag); canvas.addEventListener('lostpointercapture', endDrag);
+function applyCamera(t){
+  let P = poseBuild(t);
+  if (t > SK - .3) P = mixPose(P, poseSkull(t), ss(SK - .3, SK + 1.3, t));
+  if (t > RV) P = mixPose(P, poseReveal(t), ss(RV, RV + 1.9, t));
+  const hw = ss(HM, HM + 1.3, t);
+  if (hw > 0 && camera.aspect > 1.15){
+    const dir = P.tgt.clone().sub(P.pos), dist = dir.length();
+    const right = dir.normalize().cross(V(0,1,0)).normalize();
+    const halfW = dist * Math.tan(THREE.MathUtils.degToRad(camera.fov/2)) * camera.aspect;
+    const sh = -halfW * .4 * hw;
+    P.pos.addScaledVector(right, sh); P.tgt.addScaledVector(right, sh);
+  }
+  camera.position.copy(P.pos); camera.lookAt(P.tgt);
+}
+
+/* ---------- scene update ---------- */
+function update(t){
+  levels.forEach(L => {
+    const s0 = T0 + L.i*LV, a = ss(s0 - .4, s0 + .1, t);
+    L.mat.uniforms.uOpacity.value = a;
+    if (L.ribMat) L.ribMat.uniforms.uOpacity.value = a*.6;
+    L.group.visible = a > .001; L.group.scale.setScalar(.9 + .1*a);
+  });
+  screws.forEach(S => {
+    S.root.visible = t >= S.t0;
+    const e = Math.sin(clamp((t - S.t0)/SD, 0, 1)*Math.PI/2);
+    S.root.position.copy(S.entW).addScaledVector(S.dirW, -(1 - e)*S.travel);
+    const ang = (1 - e)*S.turns*Math.PI*2;
+    S.spin.rotation.y = ang; S.tul.rotation.y = ang;
+    const r = clamp((t - S.t0 - SD)/.4, 0, 1);
+    S.drv.visible = r < 1; S.drv.position.y = eo3(r)*10;
+    const ks = eo3((t - S.tSet)/.4);
+    S.set.visible = t >= S.tSet;
+    S.set.position.y = S.th*.86 + (1 - ks)*1.8;
+    S.set.rotation.y = (1 - ks)*2*Math.PI*2;
+  });
+  rods.forEach(R => {
+    const u = rodU(R, t);
+    R.mesh.geometry.setDrawRange(0, Math.floor(u*TS)*RS*6);
+    R.mesh.visible = R.cap.visible = u > .0005;
+    R.tip.visible = u > .0005 && u < .999;
+    R.tip.position.copy(R.curve.getPointAt(clamp(u, 0, 1))); R.tip.scale.setScalar(R.rodR(u));
+  });
+  const sk = ss(SK, SK + 1.1, t);
+  skullMat.uniforms.uOpacity.value = sk; skull.visible = sk > .001; skull.scale.setScalar(.97 + .03*sk);
+  const pk = eo3((t - PL)/.65);
+  plateInner.visible = t >= PL;
+  plateInner.position.z = (1 - pk)*5; plateInner.rotation.z = (1 - pk)*.5;
+  plateScrews.forEach(S => {
+    S.root.visible = t >= S.t0;
+    const e = Math.sin(clamp((t - S.t0)/.8, 0, 1)*Math.PI/2);
+    S.root.position.copy(S.base); S.root.position.z += (1 - e)*3;
+    S.spin.rotation.y = (1 - e)*3*Math.PI*2;
+  });
+  connSets.forEach(c => { const k = eo3((t - c.t)/.35); c.m.visible = t >= c.t; c.m.position.z = c.z + (1 - k)*1.4; c.m.rotation.z = (1 - k)*2*Math.PI*2; });
+  if (t < RV){
+    const f = clamp((t - T0)/LV + .6, 0, 24);
+    scanY.value = levelPos(f).y + Math.max(0, t - SK)*7;
+    scanAmt.value = ss(T0 - .2, T0 + .3, t) * (1 - ss(SK + .2, SK + 1.0, t));
+  } else {
+    const w = ss(RV + .2, RV + 1.7, t);
+    scanY.value = lerp(botY - 4, topY + 4, w);
+    scanAmt.value = Math.sin(Math.PI*w)*1.3;
+  }
+  dimU.value = 1 - (camera.aspect > 1.15 ? .25 : .5) * ss(HM, HM + 1.2, t);
+  dust.material.opacity = .32*ss(.2, 1.6, t)*(1 - ss(HM, HM + .4, t));
+  /* white flash carries the stage from black to white */
+  flash.style.opacity = ss(HM, HM + .45, t) * (1 - ss(HM + .5, HM + 1.5, t));
+  setLight(t >= HM + .45);
+}
+
+/* ---------- HUD / UI ---------- */
+const RAIL_LABEL = { 0:'S1', 1:'L5', 6:'T12', 18:'C7', 24:'C1', 25:'Oc' };
+const ticks = [];
+for (let i = 0; i < 26; i++){
+  const d = document.createElement('div'); d.className = 'tick';
+  if (RAIL_LABEL[i]) d.dataset.label = RAIL_LABEL[i];
+  if (i === 1 || i === 6 || i === 18 || i === 25) d.classList.add('gap');
+  rail.appendChild(d); ticks.push(d);
+}
+let hudKey = '';
+function setHud(level, spec, type){
+  const k = level + spec;
+  if (k === hudKey) return; hudKey = k;
+  hudLevel.textContent = level; hudSpec.textContent = spec; hudType.textContent = type;
+}
+let curPhase = null;
+function centerBrand(){
+  brand.style.transition = 'none'; brand.style.transform = 'none';
+  const r = brand.getBoundingClientRect();
+  const sc = window.innerWidth < 600 ? 1.3 : 1.9;
+  const dx = window.innerWidth/2 - (r.left + r.width/2), dy = window.innerHeight/2 - (r.top + r.height/2);
+  brand.style.transform = `translate(${dx}px, ${dy}px) scale(${sc})`;
+  void brand.offsetWidth;
+}
+function setPhase(p, instant){
+  if (instant){ body.classList.add('instant'); requestAnimationFrame(() => requestAnimationFrame(() => body.classList.remove('instant'))); }
+  if (p === 'intro'){ brand.style.transition = 'none'; brand.style.transform = 'none'; }
+  if (p === 'logo'){ centerBrand(); brand.style.transition = 'opacity .8s ease, transform 1.1s cubic-bezier(.65,0,.2,1)'; }
+  if (p === 'home'){
+    if (instant) brand.style.transition = 'none';
+    else brand.style.transition = 'opacity .8s ease, transform 1.1s cubic-bezier(.65,0,.2,1)';
+    brand.style.transform = 'none';
+  }
+  body.dataset.phase = p; curPhase = p;
+}
+function ui(t, instant){
+  const p = t < LG ? 'intro' : t < HM ? 'logo' : 'home';
+  if (p !== curPhase) setPhase(p, instant);
+  const show = t >= T0 - .1 && t < LG - .15;
+  hud.classList.toggle('show', show); rail.classList.toggle('show', show);
+  if (t < SK + .3){
+    const i = clamp(Math.floor((t - T0)/LV), 0, 24), n = NAMES[i], sp = SCREW[n];
+    setHud(n, `Ø ${trComma(sp[0])} × ${sp[1]} mm`, typeOf(n));
+  } else if (t < RV + .3){
+    setHud('Oksiput', 'Oksipital plak · 3 × Ø 4,5 × 10 mm', 'Oksipitoservikal füzyon');
+  } else {
+    setHud('S1 → Oc', '50 vida · 2 rod · 1 plak', 'Tam omurga stabilizasyonu');
+  }
+  for (let i = 0; i < 25; i++) ticks[i].classList.toggle('on', t >= T0 + i*LV + SD*.8);
+  ticks[25].classList.toggle('on', t >= PS + .7);
+}
+
+/* ---------- controls ---------- */
+let t = reduce ? HM + 1.5 : 0, speed = 1, last = performance.now(), jump = reduce, autoplay = !reduce;
+document.getElementById('skip').addEventListener('click', () => { t = Math.max(t, HM + 1.4); jump = true; });
+document.getElementById('replay').addEventListener('click', () => { t = 0; jump = true; autoplay = true; });
+document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => {
+  speed = +b.dataset.speed;
+  document.querySelectorAll('[data-speed]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
+}));
+brand.addEventListener('click', e => e.preventDefault());
+document.querySelectorAll('.hero a, .nav-links a, .nav-cta').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+
+window.addEventListener('resize', resize);
+resize();
+function frame(now){
+  const dt = Math.min(.05, (now - last)/1000); last = now;
+  if (autoplay) t += dt*speed;
+  update(t); applyCamera(t); updateRotation(dt, t); ui(t, jump);
+  jump = false;
+  if (!window.__introPaused) renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+})();
+</script>
+
+<script>
+(function(){
+'use strict';
+/* ===================== Şikayet Haritası ===================== */
+const $ = id => document.getElementById(id);
+const pain = $('pain'), stage = $('painStage'), pc = $('painCanvas'), hover = $('hoverLabel');
+const marksEl = $('marks'), marksEmpty = $('marksEmpty'), markCount = $('markCount');
+const sendBtn = $('sendBtn'), statusEl = $('status'), doneEl = $('done'), formEl = $('painForm');
+const inboxBtn = $('inboxBtn'), inboxEl = $('inbox'), inboxList = $('inboxList'), inboxCount = $('inboxCount');
+const clamp = (x, a, b) => Math.min(b, Math.max(a, x));
+let sending = false;
+const SYMPTOMS = ['Ağrı', 'Uyuşma', 'Karıncalanma', 'Güçsüzlük', 'Yanma / elektriklenme'];
+
+/* ---------- open / close ---------- */
+let open = false, raf = 0;
+function openPain(){
+  if (open) return; open = true;
+  pain.hidden = false; window.__introPaused = true;
+  resize(); loop();
+  pain.scrollTop = 0;
+}
+function closePain(){
+  open = false; pain.hidden = true; window.__introPaused = false; cancelAnimationFrame(raf);
+}
+document.querySelectorAll('[data-open-pain]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); openPain(); }));
+$('painBack').addEventListener('click', closePain);
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && open) closePain(); });
+
+if (typeof THREE === 'undefined') return;
+
+/* ---------- scene ---------- */
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: pc, antialias: true, alpha: true }); } catch (e) { return; }
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.setClearColor(0x000000, 0);
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(26, 1, 1, 2000);
+scene.add(new THREE.HemisphereLight(0xffffff, 0xd8dde4, .9));
+const key = new THREE.DirectionalLight(0xffffff, .75); key.position.set(60, 140, 120); scene.add(key);
+const fill = new THREE.DirectionalLight(0xdfe8f5, .35); fill.position.set(-80, 40, -60); scene.add(fill);
+
+const V = (x, y, z) => new THREE.Vector3(x, y, z);
+const skin = () => new THREE.MeshStandardMaterial({ color: 0xe6e9ee, roughness: .6, metalness: 0, emissive: 0x000000 });
+const inkMat = new THREE.MeshBasicMaterial({ color: 0x23272d, side: THREE.BackSide });
+const body = new THREE.Group(); scene.add(body);
+const parts = [];
+function part(geo, region, pos, rot, scl){
+  const m = new THREE.Mesh(geo, skin()); m.userData.region = region;
+  if (pos) m.position.set(pos[0], pos[1], pos[2]); if (rot) m.rotation.set(rot[0], rot[1], rot[2]); if (scl) m.scale.set(scl[0], scl[1], scl[2]);
+  const ink = new THREE.Mesh(geo, inkMat); ink.scale.setScalar(1.045); m.add(ink);   // back-face shell = ink outline on white
+  body.add(m); parts.push(m); return m;
+}
+function limb(a, b, r1, r2, region){
+  const A = V(...a), B = V(...b), d = B.clone().sub(A), len = d.length();
+  const g = new THREE.CylinderGeometry(r2, r1, len, 20, 1);
+  const m = part(g, region, [(A.x+B.x)/2, (A.y+B.y)/2, (A.z+B.z)/2]);
+  m.quaternion.setFromUnitVectors(V(0,1,0), d.normalize());
+  part(new THREE.SphereGeometry(r2, 18, 12), region, b);
+  return m;
+}
+/* model faces +z. x>0 is the patient's LEFT. Heights in cm. */
+(function build(){
+  const SPH = (r, w = 24, h = 16) => new THREE.SphereGeometry(r, w, h);
+  // trunk
+  const prof = [[0,88],[14,90],[16.5,97],[15,104],[14.2,112],[15.8,122],[17.3,131],[18,138],[16,143],[9,147.5],[7.4,150]].map(([r,y]) => new THREE.Vector2(r, y));
+  const trunk = part(new THREE.LatheGeometry(prof, 48), 'trunk', [0,0,0], null, [1.28, 1, .72]);
+  part(SPH(9.5), 'hip', [-8.5, 91, -5], null, [1, .9, 1]);
+  part(SPH(9.5), 'hip', [8.5, 91, -5], null, [1, .9, 1]);
+  // neck + head
+  part(new THREE.CylinderGeometry(5.6, 6.2, 11, 20), 'neck', [0, 153, -1]);
+  part(SPH(1, 36, 26), 'head', [0, 165, 0], null, [7.6, 9.4, 8.4]);
+  part(SPH(1, 24, 16), 'face', [0, 162, 5.2], null, [6.2, 6.4, 4.2]);
+  part(SPH(1, 16, 12), 'face', [0, 159.5, 9.2], null, [1.3, 2.2, 1.6]);
+  part(SPH(1, 16, 12), 'jaw', [0, 155.6, 4.6], null, [5.2, 3.4, 4.2]);
+  // shoulders + arms
+  for (const s of [-1, 1]){
+    part(SPH(7.2), 'shoulder', [s*19.5, 140.5, 0]);
+    limb([s*21.5, 139, 0], [s*25.5, 110, 1], 5.4, 4.6, 'upperarm');
+    limb([s*25.5, 110, 1], [s*29, 84, 5], 4.6, 3.6, 'forearm');
+    part(SPH(1, 18, 12), 'hand', [s*30, 76, 7], [.35, 0, 0], [3.6, 7.2, 2.4]);
+    // legs
+    limb([s*9, 90, 0], [s*10.5, 50, 0], 8.4, 6.4, 'thigh');
+    limb([s*10.5, 50, 0], [s*10.5, 12, -1], 6.2, 4.2, 'calf');
+    part(new THREE.BoxGeometry(9, 6, 24), 'foot', [s*10.5, 4, 6]);
+    part(SPH(4.5), 'foot', [s*10.5, 7, -2]);
+  }
+  trunk.geometry.computeVertexNormals();
+})();
+const floor = new THREE.Mesh(new THREE.CircleGeometry(40, 48), new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: .06 }));
+floor.rotation.x = -Math.PI/2; floor.position.y = .5; scene.add(floor);
+
+/* ---------- region naming ---------- */
+const sideOf = x => Math.abs(x) < 2.5 ? '' : (x > 0 ? 'sol' : 'sağ');
+function nameRegion(mesh, p){
+  const r = mesh.userData.region, s = sideOf(p.x), front = p.z > 0, S = s ? `, ${s}` : '';
+  switch (r){
+    case 'head': {
+      const lx = Math.abs(p.x) / 7.6, lz = p.z / 8.4, ly = (p.y - 165) / 9.4;
+      if (ly > .72) return 'Tepe (parietal)';
+      if (lz < -.45) return 'Ense / arka baş (oksipital)' + S;
+      if (lx > .62) return 'Şakak (temporal)' + S;
+      if (lz > .35) return 'Alın (frontal)' + S;
+      return 'Baş, üst yan' + S;
+    }
+    case 'face': return p.y < 159 ? 'Yüz, burun çevresi' + S : 'Göz çevresi / alın altı' + S;
+    case 'jaw': return 'Çene' + S;
+    case 'neck': return front ? 'Boyun ön' + S : 'Boyun (servikal)' + S;
+    case 'shoulder': return 'Omuz' + S;
+    case 'trunk': {
+      const y = p.y;
+      if (y > 143) return front ? 'Boyun kökü' + S : 'Ense kökü (C7)' + S;
+      if (y > 134) return front ? 'Köprücük / üst göğüs' + S : 'Omuz üstü / trapez' + S;
+      if (y > 118) return front ? 'Göğüs' + S : 'Sırt üst (torakal), kürek kemiği' + S;
+      if (y > 104) return front ? 'Karın üst' + S : 'Sırt orta (torakal)' + S;
+      if (y > 93) return front ? 'Karın alt' + S : 'Bel (lomber)' + S;
+      return front ? 'Kasık' + S : 'Bel alt / sakrum' + S;
+    }
+    case 'hip': return 'Kalça' + S;
+    case 'upperarm': return (front ? 'Üst kol ön' : 'Üst kol arka') + S;
+    case 'forearm': return 'Ön kol' + S;
+    case 'hand': return 'El / parmaklar' + S;
+    case 'thigh': return (front ? 'Uyluk ön' : 'Uyluk arka (siyatik hattı)') + S;
+    case 'calf': return (front ? 'Bacak ön (tibia)' : 'Baldır') + S;
+    case 'foot': return 'Ayak' + S;
+  }
+  return 'Bölge';
+}
+
+/* ---------- camera / rotation ---------- */
+let yaw = 0, yawT = 0, pitch = 0, drag = null, moved = 0;
+const target = V(0, 92, 0), DIST = 400;
+function resize(){
+  const w = stage.clientWidth, h = stage.clientHeight; if (!w || !h) return;
+  renderer.setSize(w, h, false); camera.aspect = w/h; camera.updateProjectionMatrix();
+}
+window.addEventListener('resize', () => { if (open) resize(); });
+function placeCamera(){
+  const d = DIST * (camera.aspect < .8 ? 1.25 : 1);
+  camera.position.set(0, target.y + 20 + pitch*120, d);
+  camera.lookAt(target);
+}
+pc.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, yaw }; moved = 0; pc.setPointerCapture(e.pointerId); });
+pc.addEventListener('pointermove', e => {
+  if (drag){
+    const dx = e.clientX - drag.x; moved = Math.max(moved, Math.abs(dx), Math.abs(e.clientY - drag.y));
+    yaw = yawT = drag.yaw + dx*0.012;
+    pitch = clamp(pitch - (e.clientY - drag.y)*0.00004, -.2, .2);
+    syncViewButtons();
+  } else hoverAt(e);
+});
+const endDrag = e => { if (!drag) return; const was = moved; drag = null; if (was < 5 && e.type === 'pointerup') clickAt(e); };
+pc.addEventListener('pointerup', endDrag); pc.addEventListener('pointercancel', endDrag); pc.addEventListener('pointerleave', () => { hover.classList.remove('show'); unhover(); });
+document.querySelectorAll('.views button').forEach(b => b.addEventListener('click', () => {
+  yawT = +b.dataset.view;
+  // shortest way round
+  while (yawT - yaw > Math.PI) yawT -= 2*Math.PI; while (yawT - yaw < -Math.PI) yawT += 2*Math.PI;
+  syncViewButtons(b);
+}));
+function syncViewButtons(active){
+  document.querySelectorAll('.views button').forEach(b => {
+    let on = false;
+    if (active) on = b === active; else { const d = Math.abs(((yaw - +b.dataset.view) % (2*Math.PI) + 3*Math.PI) % (2*Math.PI) - Math.PI); on = d < .2; }
+    b.setAttribute('aria-pressed', String(on));
+  });
+}
+
+/* ---------- picking ---------- */
+const ray = new THREE.Raycaster(), ndc = new THREE.Vector2();
+let hovered = null;
+function pick(e){
+  const r = pc.getBoundingClientRect();
+  ndc.set(((e.clientX - r.left)/r.width)*2 - 1, -((e.clientY - r.top)/r.height)*2 + 1);
+  ray.setFromCamera(ndc, camera);
+  const hits = ray.intersectObjects(parts, false);
+  return hits[0] || null;
+}
+function unhover(){ if (hovered){ hovered.material.emissive.setHex(0x000000); hovered = null; } }
+function hoverAt(e){
+  const h = pick(e);
+  if (!h){ unhover(); hover.classList.remove('show'); pc.style.cursor = 'grab'; return; }
+  if (hovered !== h.object){ unhover(); hovered = h.object; hovered.material.emissive.setHex(0x1f6a4a); hovered.material.emissiveIntensity = .22; }
+  const lp = body.worldToLocal(h.point.clone());
+  hover.textContent = nameRegion(h.object, lp);
+  const r = pc.getBoundingClientRect();
+  hover.style.left = (e.clientX - r.left) + 'px'; hover.style.top = (e.clientY - r.top) + 'px';
+  hover.classList.add('show'); pc.style.cursor = 'crosshair';
+}
+
+/* ---------- marks ---------- */
+const marks = []; let activeId = null, seq = 0;
+const markGeo = new THREE.SphereGeometry(2.6, 20, 14), ringGeo = new THREE.TorusGeometry(4.2, .45, 8, 36);
+const markMat = new THREE.MeshStandardMaterial({ color: 0xc9a35b, roughness: .35, metalness: .4, emissive: 0x6b4f12, emissiveIntensity: .35 });
+const ringMat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: .9 });
+function clickAt(e){
+  const h = pick(e); if (!h) return;
+  if (marks.length >= 6){ flashStatus('En fazla 6 bölge işaretleyebilirsiniz.', 'err'); return; }
+  const lp = body.worldToLocal(h.point.clone());
+  const ln = h.face.normal.clone().transformDirection(h.object.matrixWorld).applyQuaternion(body.quaternion.clone().invert()); // body-local normal
+  const id = ++seq;
+  const g = new THREE.Group(); g.position.copy(lp).addScaledVector(ln, 1.2);
+  const s = new THREE.Mesh(markGeo, markMat); g.add(s);
+  const ring = new THREE.Mesh(ringGeo, ringMat.clone()); ring.lookAt(ln); g.add(ring);
+  body.add(g);
+  marks.push({ id, region: nameRegion(h.object, lp), part: h.object.userData.region, side: sideOf(lp.x), pos: [lp.x, lp.y, lp.z].map(n => +n.toFixed(1)), symptoms: [], obj: g, ring });
+  activeId = id; renderMarks(); hover.classList.remove('show');
+  $('stageHint').textContent = 'Başka bölge ekleyebilir veya sağdan tanımlayabilirsiniz';
+}
+function removeMark(id){
+  const i = marks.findIndex(m => m.id === id); if (i < 0) return;
+  body.remove(marks[i].obj); marks.splice(i, 1);
+  if (activeId === id) activeId = marks.length ? marks[marks.length-1].id : null;
+  renderMarks();
+}
+function renderMarks(){
+  marksEl.querySelectorAll('.mark').forEach(n => n.remove());
+  marksEmpty.hidden = marks.length > 0;
+  markCount.textContent = marks.length + ' bölge';
+  marks.forEach((m, i) => {
+    const card = document.createElement('div'); card.className = 'mark' + (m.id === activeId ? ' active' : ''); card.dataset.id = m.id;
+    card.innerHTML = `<div class="mark-row"><span class="mark-dot">${i+1}</span><span class="mark-name"></span><button class="mark-del" type="button" aria-label="Bölgeyi kaldır">×</button></div><div class="chips"></div>`;
+    card.querySelector('.mark-name').textContent = m.region;
+    const chips = card.querySelector('.chips');
+    SYMPTOMS.forEach(sy => {
+      const b = document.createElement('button'); b.className = 'chip'; b.type = 'button'; b.textContent = sy;
+      b.setAttribute('aria-pressed', String(m.symptoms.includes(sy)));
+      b.addEventListener('click', () => { const k = m.symptoms.indexOf(sy); if (k < 0) m.symptoms.push(sy); else m.symptoms.splice(k, 1); b.setAttribute('aria-pressed', String(k < 0)); validate(); });
+      chips.appendChild(b);
+    });
+    card.querySelector('.mark-del').addEventListener('click', () => removeMark(m.id));
+    card.addEventListener('click', e => { if (e.target.closest('button')) return; activeId = m.id; renderMarks(); });
+    marksEl.appendChild(card);
+  });
+  marks.forEach(m => m.obj.scale.setScalar(m.id === activeId ? 1.25 : 1));
+  $('st1').classList.toggle('on', true); $('st2').classList.toggle('on', marks.length > 0);
+  validate();
+}
+
+/* ---------- form ---------- */
+const chars = new Set();
+document.querySelectorAll('#charChips .chip').forEach(b => b.addEventListener('click', () => {
+  const v = b.dataset.v; if (chars.has(v)) chars.delete(v); else chars.add(v); b.setAttribute('aria-pressed', String(chars.has(v))); validate();
+}));
+$('sev').addEventListener('input', () => { $('sevOut').value = $('sev').value; });
+['pName', 'pPhone', 'consent', 'dur'].forEach(id => $(id).addEventListener('input', validate));
+$('consent').addEventListener('change', validate);
+function validate(){
+  const ok = marks.length > 0 && $('pName').value.trim().length > 2 && $('pPhone').value.replace(/\D/g, '').length >= 10 && $('consent').checked;
+  sendBtn.disabled = !ok || sending;
+  $('st3').classList.toggle('on', ok);
+  return ok;
+}
+function flashStatus(msg, kind){ statusEl.className = 'status ' + kind; statusEl.textContent = msg; if (kind === 'err') setTimeout(() => { if (statusEl.textContent === msg) statusEl.className = 'status'; }, 5000); }
+function payload(){
+  return {
+    createdAt: new Date().toISOString(),
+    name: $('pName').value.trim(), phone: $('pPhone').value.trim(), age: $('pAge').value ? +$('pAge').value : null, city: $('pCity').value.trim(),
+    regions: marks.map(m => ({ region: m.region, part: m.part, side: m.side, pos: m.pos, symptoms: m.symptoms.slice() })),
+    character: [...chars], severity: +$('sev').value, duration: $('dur').value, prior: $('prior').value,
+    note: $('noteTxt').value.trim(), seen: false, ref: 'SH-' + Date.now().toString(36).toUpperCase().slice(-6)
+  };
+}
+function summaryText(p){
+  const regs = p.regions.map(r => r.region + (r.symptoms.length ? ' (' + r.symptoms.join(', ') + ')' : '')).join(' · ');
+  return `${regs}. Şiddet ${p.severity}/10${p.duration ? ', ' + p.duration : ''}${p.character.length ? '. ' + p.character.join(', ') : ''}.`;
+}
+
+/* ---------- storage (artifact db) ---------- */
+let db = null, user = null, uid = null, canWrite = null;
+(async () => {
+  try {
+    [db, user] = await Promise.all([claude.use('db'), claude.use('user')]);
+    if (user){ uid = await user.id(); canWrite = await user.can('data.write'); if (await user.canEdit()){ inboxBtn.hidden = false; watchInbox(); } }
+  } catch (e) { db = null; }
+})();
+sendBtn.addEventListener('click', async () => {
+  if (!validate()) return;
+  const p = payload();
+  sending = true; sendBtn.disabled = true; sendBtn.textContent = 'Gönderiliyor…';
+  statusEl.className = 'status';
+  let saved = false;
+  if (db && uid){
+    try {
+      const ref = db.doc('submissions/' + uid);
+      const snap = await ref.get();
+      const entries = snap.exists ? (snap.data().entries || []).slice() : [];
+      entries.push(p);
+      await ref.set({ entries: entries.slice(-50), updatedAt: p.createdAt });
+      saved = true;
+    } catch (e) { saved = false; }
+  }
+  sending = false; sendBtn.textContent = 'Doktora gönder';
+  if (saved){
+    formEl.hidden = true; doneEl.classList.add('show');
+    $('doneSum').textContent = summaryText(p); $('doneRef').textContent = 'Referans: ' + p.ref;
+    pain.scrollTop = 0;
+  } else {
+    sendBtn.disabled = false;
+    flashStatus('Bu önizleme ortamında kayıt yapılamadı. Siteye taşındığında gönderimler doğrudan doktorun paneline düşecek. Şimdilik özetinizi not alın: ' + summaryText(p), 'err');
+  }
+});
+$('newForm').addEventListener('click', () => {
+  marks.slice().forEach(m => removeMark(m.id)); chars.clear();
+  document.querySelectorAll('#charChips .chip').forEach(b => b.setAttribute('aria-pressed', 'false'));
+  $('noteTxt').value = ''; $('consent').checked = false; $('sev').value = 5; $('sevOut').value = 5;
+  doneEl.classList.remove('show'); formEl.hidden = false; validate();
+});
+
+/* ---------- inbox (doctor) ---------- */
+let unsub = null;
+function watchInbox(){
+  if (!db || unsub) return;
+  unsub = db.collection('submissions').onSnapshot(snap => {
+    const all = [];
+    snap.docs.forEach(d => (d.data().entries || []).forEach(e => all.push({ ...e, _doc: d.id })));
+    all.sort((a, b) => (b.createdAt || '').localeCompare(a.createdAt || ''));
+    inboxCount.textContent = all.filter(e => !e.seen).length || '';
+    renderInbox(all);
+  }, () => {});
+}
+function renderInbox(all){
+  inboxList.innerHTML = '';
+  if (!all.length){ inboxList.innerHTML = '<div class="empty">Henüz gönderim yok.</div>'; return; }
+  all.forEach(e => {
+    const it = document.createElement('div'); it.className = 'inbox-item' + (e.seen ? ' seen' : '');
+    const when = e.createdAt ? new Date(e.createdAt).toLocaleString('tr-TR', { dateStyle: 'medium', timeStyle: 'short' }) : '';
+    it.innerHTML = `<div class="top"><span class="who"></span><span class="when"></span></div><div class="regs"></div><div class="meta"></div><div class="acts"><button class="btn" type="button" data-act="seen"></button><a class="btn" data-act="tel"></a></div>`;
+    it.querySelector('.who').textContent = (e.name || 'İsimsiz') + (e.age ? ', ' + e.age : '') + (e.city ? ' · ' + e.city : '');
+    it.querySelector('.when').textContent = when + (e.ref ? ' · ' + e.ref : '');
+    const regs = it.querySelector('.regs');
+    (e.regions || []).forEach(r => { const s = document.createElement('span'); s.textContent = r.region + (r.symptoms && r.symptoms.length ? ': ' + r.symptoms.join(', ') : ''); regs.appendChild(s); });
+    const meta = it.querySelector('.meta');
+    meta.innerHTML = `<b>Şiddet ${e.severity ?? '-'}/10</b>${e.duration ? ' · ' + e.duration : ''}${e.prior ? ' · ' + e.prior : ''}${e.character && e.character.length ? '<br>' + e.character.join(', ') : ''}${e.note ? '<br>“' + e.note.replace(/</g, '&lt;') + '”' : ''}`;
+    const seenBtn = it.querySelector('[data-act=seen]'); seenBtn.textContent = e.seen ? 'Görülmedi yap' : 'Görüldü';
+    seenBtn.addEventListener('click', async () => {
+      try {
+        const ref = db.doc('submissions/' + e._doc); const snap = await ref.get(); if (!snap.exists) return;
+        const entries = (snap.data().entries || []).map(x => x.ref === e.ref ? { ...x, seen: !e.seen } : x);
+        await ref.set({ ...snap.data(), entries });
+      } catch (err) {}
+    });
+    const tel = it.querySelector('[data-act=tel]'); tel.textContent = e.phone || 'Telefon yok'; tel.href = e.phone ? 'tel:' + e.phone.replace(/\s/g, '') : '#';
+    inboxList.appendChild(it);
+  });
+}
+inboxBtn.addEventListener('click', () => pain.classList.add('inbox-mode'));
+$('inboxClose').addEventListener('click', () => pain.classList.remove('inbox-mode'));
+
+/* ---------- loop ---------- */
+let last = performance.now();
+function loop(now){
+  if (!open) return;
+  raf = requestAnimationFrame(loop);
+  const t = (now || performance.now())/1000, dt = Math.min(.05, ((now || performance.now()) - last)/1000); last = now || performance.now();
+  if (!drag){ yaw += (yawT - yaw) * Math.min(1, dt*6); pitch *= Math.pow(.2, dt); }
+  body.rotation.y = yaw;
+  marks.forEach(m => { const k = 1 + .18*Math.sin(t*4 + m.id); m.ring.scale.setScalar(k); m.ring.material.opacity = .55 + .35*Math.sin(t*4 + m.id); });
+  placeCamera();
+  renderer.render(scene, camera);
+}
+})();
+</script>
+
+</body>
+</html>
