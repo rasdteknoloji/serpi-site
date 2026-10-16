@@ -4,11 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="description" content="Op. Dr. Muhammet Serpi · Beyin ve Sinir Cerrahisi">
+<meta name="theme-color" content="#ffffff">
 <style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Op. Dr. Muhammet Serpi · Beyin ve Sinir Cerrahisi</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Manrope:wght@400;500;600&family=JetBrains+Mono:wght@300;400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@300;400&display=swap">
 <style>
 /* Layout: full-bleed WebGL stage; thin surgical HUD bottom-left, level rail at left edge; homepage overlays the left column once the intro resolves */
 :root{
@@ -143,7 +144,7 @@ a{text-decoration:none;color:inherit}
   .brand-name{font-size:20px}
 }
 @media (max-height:560px){.rail{display:none}}
-@media (max-width:520px){.nav-cta{display:none!important}.brand-name{font-size:19px}.brand svg{width:34px;height:44px}.pain .views button{padding:9px 12px}}
+@media (max-width:520px){.pain .views button{padding:9px 12px}}
 
 /* ===== Online ön görüşme: şikayet haritası ===== */
 .pain{position:fixed;inset:0;z-index:20;background:var(--void);color:var(--bone);overflow:auto;display:flex;flex-direction:column;
@@ -261,6 +262,142 @@ textarea.inp{min-height:58px;resize:vertical;line-height:1.45}
   .side-key{display:none}
   .two{grid-template-columns:1fr}
 }
+
+/* ================= Apple Health layer: neutral ground, SF/Inter type, one brand accent ================= */
+:root{
+  --f-disp:-apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --f-body:-apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Helvetica Neue", Arial, sans-serif;
+  --staff:#e9edf3;
+}
+body[data-phase="home"]{
+  --void:#ffffff; --bone:#1d1d1f; --bone-dim:#6e6e73; --titanium:#86868b; --gold:#a8833f;
+  --green:#1d1d1f; --green-soft:#f5f5f7; --hair:rgba(0,0,0,.1); --staff:#1d1d1f;
+  overflow-x:hidden; overflow-y:auto;
+}
+body.pain-open{overflow:hidden!important}
+body[data-phase="home"] #stage{touch-action:pan-y}
+.nav{z-index:10}
+.controls{z-index:10}
+body[data-phase="home"] .controls{display:none}
+.brand .staff rect,.brand .staff path{fill:var(--staff)}
+
+/* nav: frosted glass bar */
+body[data-phase="home"] .nav{
+  background:rgba(255,255,255,.72);-webkit-backdrop-filter:saturate(180%) blur(20px);backdrop-filter:saturate(180%) blur(20px);
+  border-bottom:1px solid rgba(0,0,0,.06);padding-top:calc(env(safe-area-inset-top,0px) + 10px);padding-bottom:10px}
+.brand svg{transition:width .6s ease,height .6s ease}
+body[data-phase="home"] .brand svg{width:30px;height:38px}
+.brand-name{font-family:var(--f-disp);font-weight:600;font-size:19px;letter-spacing:-.015em}
+.brand-sub{font-family:var(--f-body);font-size:12px;letter-spacing:-.005em;text-transform:none;color:var(--bone-dim);margin-top:3px}
+.nav-links{gap:28px}
+.nav-links a{font-family:var(--f-body);font-size:13px;font-weight:400;letter-spacing:-.005em;color:rgba(29,29,31,.78)}
+.nav-links a:hover,.nav-links a:focus-visible{color:#000}
+.btn{font-family:var(--f-body);font-weight:500;letter-spacing:-.01em;font-size:14px}
+body[data-phase="home"] .btn-gold{background:#1d1d1f;border-color:#1d1d1f;color:#fff}
+body[data-phase="home"] .btn-gold:hover{background:#000;border-color:#000;color:#fff;filter:none}
+.nav-cta{gap:0;padding:8px 18px;font-size:13px}
+
+/* hero */
+.hero-screen{position:relative;height:100vh;height:100svh;z-index:1;pointer-events:none}
+.hero{position:absolute}
+.eyebrow{font-family:var(--f-body);font-size:17px;font-weight:600;letter-spacing:-.01em;text-transform:none;color:var(--gold)}
+.eyebrow::before{content:none}
+.hero h1{font-family:var(--f-disp);font-weight:700;font-size:clamp(40px,5.4vw,78px);line-height:1.03;letter-spacing:-.035em}
+.hero h1 em{font-style:normal;color:#86868b}
+.hero p{font-size:19px;line-height:1.45;letter-spacing:-.01em;max-width:40ch}
+.hero-actions{align-items:center;gap:22px}
+.hero-actions .btn{padding:12px 24px;font-size:15px}
+.link-arrow{font-family:var(--f-body);font-size:17px;letter-spacing:-.01em;color:#0066cc;text-decoration:none;display:inline-flex;align-items:center;gap:2px;padding:10px 2px}
+.link-arrow:hover{text-decoration:underline}
+.link-arrow:focus-visible{outline:2px solid #0071e3;outline-offset:3px;border-radius:6px}
+
+/* sections (light, single theme by design) */
+.sections,.foot{position:relative;z-index:2;background:#f5f5f7;color:#1d1d1f;font-family:var(--f-body)}
+body:not([data-phase="home"]) .sections,body:not([data-phase="home"]) .foot{visibility:hidden}
+.sec{padding-block:96px 8px;scroll-margin-top:60px}
+.foot{scroll-margin-top:60px}
+.sec-in{max-width:1100px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px))}
+.kicker{font-size:17px;font-weight:600;letter-spacing:-.01em;color:#a8833f;margin:0 0 10px}
+.sec-h{font-family:var(--f-disp);font-size:clamp(32px,4.4vw,56px);font-weight:700;letter-spacing:-.035em;line-height:1.05;margin:0 0 44px;max-width:17ch;text-wrap:balance}
+.sec-h span{color:#86868b}
+.cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.hcard{display:flex;flex-direction:column;gap:8px;background:#fff;border-radius:20px;padding:18px 22px 24px;text-decoration:none;color:inherit;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s ease}
+.hcard:hover{transform:translateY(-3px);box-shadow:0 18px 44px rgba(0,0,0,.08)}
+.hcard:focus-visible{outline:2px solid #0071e3;outline-offset:3px}
+.hc-top{display:flex;align-items:center;gap:8px;color:var(--c);font-size:15px;font-weight:600;letter-spacing:-.01em}
+.hc-ic{width:22px;height:22px;flex:none}
+.hc-chev{margin-left:auto;color:#c7c7cc;font-size:24px;line-height:1;font-weight:400}
+.hcard h3{margin:10px 0 0;font-family:var(--f-disp);font-size:21px;font-weight:600;letter-spacing:-.02em;line-height:1.2}
+.hcard p{margin:0;font-size:15px;line-height:1.5;color:#6e6e73}
+.feature{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:32px;align-items:center;background:#000;color:#f5f5f7;border-radius:28px;padding:56px;overflow:hidden}
+.feature .kicker{color:#d4b06a}
+.feature h2{font-family:var(--f-disp);font-size:clamp(30px,3.8vw,50px);font-weight:700;letter-spacing:-.035em;line-height:1.05;margin:0 0 16px}
+.feature p{font-size:17px;line-height:1.5;color:#a1a1a6;margin:0 0 24px;max-width:44ch}
+.ft-steps{display:flex;gap:20px;flex-wrap:wrap;margin:0 0 28px;padding:0;list-style:none;font-size:15px}
+.ft-steps b{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:50%;background:#2c2c2e;font-size:12px;font-weight:600;margin-right:8px}
+.btn-white{background:#f5f5f7;color:#1d1d1f;border-color:#f5f5f7;padding:12px 24px;font-size:15px}
+.btn-white:hover{background:#fff;border-color:#fff;color:#000}
+.ft-art svg{width:100%;max-width:280px;height:auto;display:block;margin:0 auto}
+.pulse{transform-box:fill-box;transform-origin:center;animation:pulse 2.4s ease-out infinite}
+.pulse.d2{animation-delay:.8s}.pulse.d3{animation-delay:1.6s}
+@keyframes pulse{0%{transform:scale(.6);opacity:.9}100%{transform:scale(2.8);opacity:0}}
+.journey{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.journey li{background:#fff;border-radius:18px;padding:20px 20px 22px;display:flex;flex-direction:column;gap:6px}
+.jn{width:28px;height:28px;border-radius:50%;background:#1d1d1f;color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
+.journey h3{margin:10px 0 0;font-size:17px;font-weight:600;letter-spacing:-.015em}
+.journey p{margin:0;font-size:14px;line-height:1.5;color:#6e6e73}
+.foot{padding-block:96px 36px}
+.foot-cta{display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;background:#fff;border-radius:24px;padding:34px 38px}
+.foot-cta h2{font-family:var(--f-disp);font-size:30px;font-weight:700;letter-spacing:-.03em;margin:0 0 6px}
+.foot-cta p{margin:0;color:#6e6e73;font-size:15px;line-height:1.5;max-width:54ch}
+.foot-cta .btn{padding:12px 26px;font-size:15px}
+.foot-bot{display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between;align-items:center;margin-top:28px;padding-top:18px;border-top:1px solid rgba(0,0,0,.1);font-size:12px;line-height:1.5;color:#86868b}
+.linkish{background:none;border:0;padding:0;font:inherit;color:#0066cc;cursor:pointer}
+.linkish:hover{text-decoration:underline}
+@media (prefers-reduced-motion: reduce){.pulse{animation:none;opacity:.6}.hcard{transition:none}}
+@media (max-width:980px){.cards{grid-template-columns:1fr 1fr}.feature{grid-template-columns:1fr;padding:36px 28px}.ft-art{order:-1}
+  .journey{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:minmax(220px,72%);overflow-x:auto;padding-bottom:8px;scroll-snap-type:x mandatory}
+  .journey li{scroll-snap-align:start}}
+@media (max-width:600px){.cards{grid-template-columns:1fr}.sec{padding-block:72px 4px}.foot{padding-block:72px 28px}.foot-cta{padding:26px 24px}
+  .hero p{font-size:17px}.link-arrow{font-size:16px}}
+@media (max-width:520px){
+  .nav{gap:12px}
+  .brand{gap:10px}
+  .brand-name{font-size:15px}
+  .brand-sub{font-size:11px}
+  body[data-phase="home"] .brand svg{width:26px;height:33px}
+  .nav-cta{padding:7px 14px}
+}
+@media (max-width:420px){.cta-long{display:none}.nav{padding-left:16px;padding-right:16px}}
+
+/* pain map in the same language */
+.pain{--green:#1d1d1f;--green-soft:#f5f5f7;--hair:rgba(0,0,0,.1);--bone:#1d1d1f;--bone-dim:#6e6e73;--gold:#a8833f}
+.pain-title h2{font-family:var(--f-disp);font-weight:700;font-size:20px;letter-spacing:-.02em}
+.steps{font-family:var(--f-body);font-size:13px;letter-spacing:-.005em;text-transform:none}
+.stp.on i{background:#1d1d1f;border-color:#1d1d1f}
+.stage-hint{font-family:var(--f-body);font-size:13px;letter-spacing:-.005em;text-transform:none;color:#1d1d1f;background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-color:rgba(0,0,0,.06)}
+.pain-stage{background:radial-gradient(ellipse at 50% 55%,#ffffff 0%,#f5f5f7 65%,#ececf0 100%)}
+.fld>label,.fld>.lbl{font-family:var(--f-body);font-size:13px;font-weight:500;letter-spacing:-.005em;text-transform:none;color:#6e6e73}
+.fld>.lbl b{color:#1d1d1f}
+.panel-head h3{font-family:var(--f-disp);font-weight:700;font-size:26px;letter-spacing:-.03em}
+.panel-head p{font-size:14px}
+.wiz-count{font-family:var(--f-body);font-size:13px;letter-spacing:0}
+.sev output{font-family:var(--f-body);font-weight:600}
+.inp,textarea.inp,select.inp{background:#f5f5f7;border-color:transparent}
+.inp:focus{outline:2px solid #0071e3;outline-offset:0;background:#fff;border-color:transparent}
+.chip{background:#f5f5f7;border-color:transparent}
+.chip:hover{border-color:transparent;background:#e8e8ed}
+.chip[aria-pressed="true"]{background:#1d1d1f;border-color:#1d1d1f;color:#fff}
+.mark{background:#f5f5f7;border-color:transparent}
+.mark.active{background:#fff;border-color:#1d1d1f;box-shadow:none}
+.review{background:#f5f5f7;color:#1d1d1f}
+.empty{border-color:rgba(0,0,0,.14)}
+.inbox-item .when{font-family:var(--f-body)}
+.done{background:#f0faf3;border-color:rgba(48,164,108,.25)}
+.done .tick{background:#30a46c}
+.done h3{font-family:var(--f-disp);font-weight:700;letter-spacing:-.025em}
+.done p{color:#1e6b45}
 </style>
 </head>
 <body>
@@ -308,25 +445,127 @@ textarea.inp{min-height:58px;resize:vertical;line-height:1.45}
     </span>
   </a>
   <ul class="nav-links">
-    <li><a href="#">Hakkımda</a></li>
-    <li><a href="#">Tedaviler</a></li>
-    <li class="opt"><a href="#">Omurga Cerrahisi</a></li>
-    <li class="opt"><a href="#">Hasta Rehberi</a></li>
+    <li><a href="#uzmanlik">Uzmanlık Alanları</a></li>
+    <li><a href="#surec">Tedavi Süreci</a></li>
     <li><a href="#" data-open-pain>Online Ön Görüşme</a></li>
-    <li><a href="#">İletişim</a></li>
+    <li><a href="#iletisim">İletişim</a></li>
   </ul>
-  <a class="btn btn-gold nav-cta" href="#">Randevu al</a>
+  <a class="btn btn-gold nav-cta" href="#" data-open-pain>Randevu<span class="cta-long">&nbsp;al</span></a>
 </header>
 
+<div class="hero-screen" id="top">
 <section class="hero" aria-label="Ana sayfa">
-  <div class="eyebrow">Beyin ve Sinir Cerrahisi Uzmanı</div>
-  <h1>Omurganın her seviyesinde <em>planlı ve hassas</em> cerrahi.</h1>
-  <p>Op. Dr. Muhammet Serpi; bel ve boyun fıtığından omurga stabilizasyonuna, beyin ve sinir cerrahisinin tüm alanlarında tanı, cerrahi planlama ve uzun dönem takip sunar. Her vida ve her rod, hastaya özel ölçülerle seçilir.</p>
+  <div class="eyebrow">Beyin ve Sinir Cerrahisi</div>
+  <h1>Omurganız için<br><em>hassas cerrahi.</em></h1>
+  <p>Bel ve boyun fıtığından omurga stabilizasyonuna; tanı, cerrahi planlama ve uzun dönem takip tek elden. Her vida ve rod size özel ölçülerle seçilir.</p>
   <div class="hero-actions">
-    <a class="btn btn-gold" href="#">Randevu al</a>
-    <a class="btn" href="#" data-open-pain>Ağrınızı haritada gösterin</a>
+    <a class="btn btn-gold" href="#" data-open-pain>Randevu al</a>
+    <a class="link-arrow" href="#" data-open-pain>Ağrınızı haritada gösterin ›</a>
   </div>
 </section>
+</div>
+
+<main class="sections">
+  <section class="sec" id="uzmanlik" aria-labelledby="uzmanlik-h">
+    <div class="sec-in">
+      <p class="kicker">Uzmanlık alanları</p>
+      <h2 class="sec-h" id="uzmanlik-h">Ağrının kaynağına <span>odaklanan tedavi.</span></h2>
+      <div class="cards">
+        <a class="hcard" href="#" data-open-pain style="--c:#FF9500">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="7" y="2.5" width="10" height="4.2" rx="2"/><rect x="6.5" y="8.4" width="11" height="4.4" rx="2.1"/><rect x="6" y="14.5" width="12" height="4.6" rx="2.2"/><path d="M8 20.6h8l-2.6 2.6h-2.8z"/></svg><span>Bel fıtığı</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Bacağa yayılan ağrı</h3>
+          <p>Siyatik ağrısı ve bacakta uyuşmada muayene, MR değerlendirmesi ve gerektiğinde mikrocerrahi.</p>
+        </a>
+        <a class="hcard" href="#" data-open-pain style="--c:#FF2D55">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="5" r="3.6"/><rect x="9" y="10" width="6" height="2.6" rx="1.3"/><rect x="8.6" y="14" width="6.8" height="2.8" rx="1.4"/><rect x="8.2" y="18.2" width="7.6" height="3" rx="1.5"/></svg><span>Boyun fıtığı</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Kola yayılan ağrı ve uyuşma</h3>
+          <p>Boyun kaynaklı kol ağrısı, elde uyuşma ve güç kaybında kapsamlı değerlendirme.</p>
+        </a>
+        <a class="hcard" href="#" data-open-pain style="--c:#AF52DE">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 3c3 4 3 14 0 18M18 3c-3 4-3 14 0 18"/><path d="M12 5v14" stroke-dasharray="2 3"/></svg><span>Kanal darlığı</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Yürürken artan bacak ağrısı</h3>
+          <p>Omurga kanalı daralmasında sinirleri rahatlatan dekompresyon cerrahisi.</p>
+        </a>
+        <a class="hcard" href="#" data-open-pain style="--c:#007AFF">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M7 3v18M17 3v18"/><path d="M4 7h6M14 7h6M4 12h6M14 12h6M4 17h6M14 17h6" stroke-width="2.4"/></svg><span>Omurga stabilizasyonu</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Kayma, kırık ve instabilite</h3>
+          <p>Hastaya özel ölçülerde vida ve rod sistemleriyle omurganın sabitlenmesi.</p>
+        </a>
+        <a class="hcard" href="#" data-open-pain style="--c:#5856D6">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 3.2c-1.6-.9-3.8-.3-4.6 1.4-1.8.1-3.2 1.7-3 3.5-1.3.9-1.8 2.7-1 4.2-.7 1.5-.2 3.4 1.2 4.3.1 1.9 1.8 3.4 3.7 3.2.9 1.4 2.6 2 4 1.4zM13 3.2c1.6-.9 3.8-.3 4.6 1.4 1.8.1 3.2 1.7 3 3.5 1.3.9 1.8 2.7 1 4.2.7 1.5.2 3.4-1.2 4.3-.1 1.9-1.8 3.4-3.7 3.2-.9 1.4-2.6 2-4 1.4z"/></svg><span>Beyin cerrahisi</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Beyin tümörleri ve kanamalar</h3>
+          <p>Tanıdan ameliyat sonrası takibe kadar planlı yürütülen tedavi.</p>
+        </a>
+        <a class="hcard" href="#" data-open-pain style="--c:#30B0C7">
+          <div class="hc-top"><svg class="hc-ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12c2-4 4-4 6 0s4 4 6 0 4-4 6 0"/><circle cx="3" cy="12" r="1.4" fill="currentColor"/><circle cx="21" cy="12" r="1.4" fill="currentColor"/></svg><span>Periferik sinir</span><span class="hc-chev" aria-hidden="true">›</span></div>
+          <h3>Sinir sıkışmaları</h3>
+          <p>Karpal tünel ve benzeri sinir sıkışmalarında cerrahi çözüm.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="on-gorusme" aria-labelledby="ongorusme-h">
+    <div class="sec-in">
+      <div class="feature">
+        <div class="ft-text">
+          <p class="kicker">Online ön görüşme</p>
+          <h2 id="ongorusme-h">Ağrınızı 3D haritada gösterin.</h2>
+          <p>Ağrıyan bölgeye dokunun, hissettiğinizi seçin ve notunuzu ekleyin. Ön değerlendirmeniz doğrudan Op. Dr. Muhammet Serpi'ye ulaşır; ekibimiz randevu için sizi arar.</p>
+          <ol class="ft-steps"><li><b>1</b>İşaretle</li><li><b>2</b>Tanımla</li><li><b>3</b>Gönder</li></ol>
+          <a class="btn btn-white" href="#" data-open-pain>Haritayı aç</a>
+        </div>
+        <div class="ft-art"><svg viewBox="0 0 200 300" aria-hidden="true">
+          <g fill="#1c1c1e" stroke="#3a3a3c" stroke-width="2">
+            <circle cx="100" cy="38" r="22"/>
+            <rect x="92" y="58" width="16" height="14" rx="6"/>
+            <path d="M62 82 Q100 70 138 82 L132 168 Q100 176 68 168 Z"/>
+            <path d="M64 86 Q48 120 46 170 L56 172 Q62 128 74 104 Z"/>
+            <path d="M136 86 Q152 120 154 170 L144 172 Q138 128 126 104 Z"/>
+            <path d="M70 166 L94 168 L92 286 L74 286 Z"/>
+            <path d="M106 168 L130 166 L126 286 L108 286 Z"/>
+          </g>
+          <g fill="#d4b06a">
+            <circle class="pulse" cx="100" cy="74" r="6"/><circle cx="100" cy="74" r="4"/>
+            <circle class="pulse d2" cx="100" cy="152" r="6"/><circle cx="100" cy="152" r="4"/>
+            <circle class="pulse d3" cx="83" cy="222" r="6"/><circle cx="83" cy="222" r="4"/>
+          </g>
+        </svg></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="surec" aria-labelledby="surec-h">
+    <div class="sec-in">
+      <p class="kicker">Tedavi süreci</p>
+      <h2 class="sec-h" id="surec-h">İlk mesajdan <span>iyileşmeye kadar.</span></h2>
+      <ol class="journey">
+        <li><span class="jn">1</span><h3>Ön görüşme</h3><p>Şikayetinizi online haritada paylaşırsınız, ekibimiz sizi arar.</p></li>
+        <li><span class="jn">2</span><h3>Muayene ve görüntüleme</h3><p>Muayene ve MR ya da BT ile şikayetin kaynağı netleşir.</p></li>
+        <li><span class="jn">3</span><h3>Tedavi planı</h3><p>Ameliyatsız seçenekler dahil, size uygun yol birlikte belirlenir.</p></li>
+        <li><span class="jn">4</span><h3>Cerrahi</h3><p>Gerekirse ölçüleri önceden planlanmış hassas cerrahi uygulanır.</p></li>
+        <li><span class="jn">5</span><h3>Takip</h3><p>İyileşme süreci kontrol muayeneleriyle izlenir.</p></li>
+      </ol>
+    </div>
+  </section>
+</main>
+
+<footer class="foot" id="iletisim">
+  <div class="sec-in">
+    <div class="foot-cta">
+      <div>
+        <h2>Randevu ve iletişim</h2>
+        <p>Randevu talebinizi online ön görüşme üzerinden iletin; ekibimiz sizi arayarak uygun zamanı planlasın.</p>
+      </div>
+      <a class="btn btn-gold" href="#" data-open-pain>Randevu al</a>
+    </div>
+    <div class="foot-bot">
+      <span>© 2026 Op. Dr. Muhammet Serpi · Beyin ve Sinir Cerrahisi</span>
+      <span>Bu sitedeki bilgiler muayenenin yerini tutmaz. Acil durumda 112'yi arayın.</span>
+      <button class="linkish" type="button" id="replay2">İntroyu yeniden izle</button>
+    </div>
+  </div>
+</footer>
 
 <div class="rail" id="rail" aria-hidden="true"></div>
 <div class="hud" id="hud" aria-live="off">
@@ -1369,13 +1608,21 @@ function ui(t, instant){
 /* ---------- controls ---------- */
 let t = reduce ? HM + 1.5 : 0, speed = 1, last = performance.now(), jump = reduce, autoplay = !reduce;
 document.getElementById('skip').addEventListener('click', () => { t = Math.max(t, HM + 1.4); jump = true; });
-document.getElementById('replay').addEventListener('click', () => { t = 0; jump = true; autoplay = true; });
+document.getElementById('replay').addEventListener('click', () => { window.scrollTo(0, 0); t = 0; jump = true; autoplay = true; });
 document.querySelectorAll('[data-speed]').forEach(b => b.addEventListener('click', () => {
   speed = +b.dataset.speed;
   document.querySelectorAll('[data-speed]').forEach(o => o.setAttribute('aria-pressed', String(o === b)));
 }));
 brand.addEventListener('click', e => e.preventDefault());
-document.querySelectorAll('.hero a, .nav-links a, .nav-cta').forEach(a => a.addEventListener('click', e => e.preventDefault()));
+document.querySelectorAll('a[href^="#"]').forEach(a => a.addEventListener('click', e => {
+  if (a.hasAttribute('data-open-pain')) return;            // the pain map handles these
+  e.preventDefault();
+  const id = a.getAttribute('href').slice(1), el = id && document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  else window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+}));
+const replay2 = document.getElementById('replay2');
+if (replay2) replay2.addEventListener('click', () => document.getElementById('replay').click());
 
 window.addEventListener('resize', resize);
 resize();
@@ -1384,7 +1631,7 @@ function frame(now){
   if (autoplay) t += dt*speed;
   update(t); applyCamera(t); updateRotation(dt, t); ui(t, jump);
   jump = false;
-  if (!window.__introPaused) renderer.render(scene, camera);
+  if (!window.__introPaused && (curPhase !== 'home' || window.scrollY < window.innerHeight)) renderer.render(scene, camera);
   requestAnimationFrame(frame);
 }
 requestAnimationFrame(frame);
@@ -1408,12 +1655,12 @@ const SYMPTOMS = ['Ağrı', 'Uyuşma', 'Karıncalanma', 'Güçsüzlük', 'Yanma 
 let open = false, raf = 0;
 function openPain(){
   if (open) return; open = true;
-  pain.hidden = false; window.__introPaused = true;
+  pain.hidden = false; window.__introPaused = true; document.body.classList.add('pain-open');
   resize(); loop();
   pain.scrollTop = 0;
 }
 function closePain(){
-  open = false; pain.hidden = true; window.__introPaused = false; cancelAnimationFrame(raf);
+  open = false; pain.hidden = true; window.__introPaused = false; document.body.classList.remove('pain-open'); cancelAnimationFrame(raf);
 }
 document.querySelectorAll('[data-open-pain]').forEach(el => el.addEventListener('click', e => { e.preventDefault(); openPain(); }));
 $('painBack').addEventListener('click', closePain);
@@ -1588,7 +1835,7 @@ function unhover(){ if (hovered){ hovered.material.emissive.setHex(0x000000); ho
 function hoverAt(e){
   const h = pick(e);
   if (!h){ unhover(); hover.classList.remove('show'); pc.style.cursor = 'grab'; return; }
-  if (hovered !== h.object){ unhover(); hovered = h.object; hovered.material.emissive.setHex(0x1f6a4a); hovered.material.emissiveIntensity = .22; }
+  if (hovered !== h.object){ unhover(); hovered = h.object; hovered.material.emissive.setHex(0x6b5320); hovered.material.emissiveIntensity = .28; }
   const lp = body.worldToLocal(h.point.clone());
   hover.textContent = nameRegion(h.object, lp);
   const r = pc.getBoundingClientRect();
@@ -1600,7 +1847,7 @@ function hoverAt(e){
 const marks = []; let activeId = null, seq = 0;
 const markGeo = new THREE.SphereGeometry(2.6, 20, 14), ringGeo = new THREE.TorusGeometry(4.2, .45, 8, 36);
 const markMat = new THREE.MeshStandardMaterial({ color: 0xc9a35b, roughness: .35, metalness: .4, emissive: 0x6b4f12, emissiveIntensity: .35 });
-const ringMat = new THREE.MeshBasicMaterial({ color: 0x2f7d5b, transparent: true, opacity: .9 });
+const ringMat = new THREE.MeshBasicMaterial({ color: 0xa8833f, transparent: true, opacity: .9 });
 function clickAt(e){
   const h = pick(e); if (!h) return;
   if (marks.length >= 6){ $('stageHint').textContent = 'En fazla 6 bölge işaretleyebilirsiniz'; return; }
