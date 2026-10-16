@@ -1,4 +1,4 @@
-# Op. Dr. Muhammet Serpi — Beyin ve Sinir Cerrahisi
+# Op. Dr. Muhammed Serpi — Beyin ve Sinir Cerrahisi
 
 Tek sayfalık site: 3D omurga vidalama introsu, ana sayfa ve şikayet haritası (online ön görüşme).
 
